@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.manpowergroup.cn.icloud.base.mapper.CodeMapper">
+	
+	<!-- <cache eviction="LRU" type="com.manpowergroup.cn.core.memcached.MemcachedCache"></cache> -->
+
+	
+	
+
+	<!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+	<select id="search" parameterType="map" resultType="com.manpowergroup.cn.icloud.base.entity.Code">
+		SELECT 
+		c.BD_CODE as bdCode,
+		c.ID,
+		c.BD_NAME as bdName,
+		c.BD_TYPE as bdType,
+		c.BD_REMARK as bdRemark 
+		FROM T_BASE_DATA c
+		<where>
+		        and BD_STATUS>0
+			<if test="bdname != null and bdname!='' ">
+				and BD_NAME=#{bdname}
+			</if>
+			<if test="bdtype != null and bdtype !='' ">
+				and BD_TYPE=#{bdtype}
+			</if>
+
+		</where>
+	</select>
+	
+
+
+	<select id="count" parameterType="map" resultType="java.lang.Long">
+	SELECT COUNT(*) FROM (SELECT distinct id FROM T_BASE_DATA c
+		<where>
+		        and BD_STATUS>0
+			<if test="bdname != null and bdname!='' ">
+				and BD_NAME=#{bdname}
+			</if>
+			<if test="bdtype != null and bdtype !='' ">
+				and BD_TYPE=#{bdtype}
+			</if>
+			
+		</where>
+		)  cc
+	</select>
+
+
+<!-- 删除用户 -->
+	<delete id="delete" parameterType="java.lang.Long">
+	update T_BASE_DATA set BD_STATUS=-1 WHERE ID=#{id}
+	    <!-- delete from t_base_code where id=#{id} -->
+	</delete>
+
+
+	<select id="get" parameterType="java.lang.Long" resultType="com.manpowergroup.cn.icloud.base.entity.Code">
+	SELECT 
+		c.BD_CODE as bdCode,
+		c.ID,
+		c.BD_NAME as bdName,
+		c.BD_TYPE as bdType,
+		c.BD_REMARK as bdRemark ,
+		c.SEQ as seq
+		FROM T_BASE_DATA c WHERE ID=#{id}
+	</select>
+	
+	
+	
+	
+	
+	<insert id="insert" parameterType="com.manpowergroup.cn.icloud.base.entity.Code" keyProperty="id" keyColumn="ID">
+		insert into T_BASE_DATA (
+				BD_NAME,
+				BD_CODE,
+				SEQ,
+				BD_STATUS,
+				CREATE_BY,
+				CREATE_DATE,
+				BD_REMARK,
+				BD_TYPE
+		 )
+		values (
+		#{bdName:VARCHAR},#{bdCode:VARCHAR},#{seq:INTEGER},
+		#{bdStatus:INTEGER},#{createBy:INTEGER},#{createDate:TIMESTAMP},#{bdRemark:VARCHAR},#{bdType:VARCHAR}
+		)
+		
+		<selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">   
+        <![CDATA[SELECT @@IDENTITY AS id ]]>  
+        </selectKey>  
+		
+	</insert>
+	
+	
+	
+	
+	<update id="update"  parameterType="com.manpowergroup.cn.icloud.base.entity.Code">
+		update T_BASE_DATA 
+				set BD_CODE =#{bdCode:VARCHAR},
+				BD_NAME =#{bdName:VARCHAR},
+				BD_TYPE =#{bdType:VARCHAR},
+				BD_REMARK= #{bdRemark:VARCHAR},
+				MODIFY_BY=#{modifyBy:INTEGER},
+				MODIFY_DATE= #{modifyDate:TIMESTAMP}, 
+				SEQ=#{seq:INTEGER} 
+		where ID=#{id}
+	</update>
+	
+	
+	
+	
+</mapper> 
+

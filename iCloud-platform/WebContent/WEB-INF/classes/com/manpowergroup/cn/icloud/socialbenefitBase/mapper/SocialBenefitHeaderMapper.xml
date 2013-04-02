@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.manpowergroup.cn.icloud.socialbenefitBase.mapper.SocialBenefitHeaderMapper" >
+	<resultMap id="BaseResultMap" type="com.manpowergroup.cn.icloud.socialbenefitBase.entity.SocialBenefitHeader" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="CITY_ID" property="cityId" jdbcType="DECIMAL" />
+    <result column="RESIDENCY" property="residency" jdbcType="VARCHAR" />
+    <result column="AJUST_TIME" property="ajustTime" jdbcType="VARCHAR" />
+    <result column="MONTH_ATTRIBUTE" property="attributeMonth" jdbcType="VARCHAR" />
+    <result column="MONTH_EFFECTIVE" property="monthEffctive" jdbcType="VARCHAR" />
+    <result column="ADD_TIME_LIMIT" property="addLimitTime" jdbcType="DECIMAL" />
+    <result column="EBB_TIME_LIMIT" property="ebbLimitTime" jdbcType="DECIMAL" />
+    <result column="TERM_MONTH" property="termMonth" jdbcType="VARCHAR" />
+    <result column="EFFECTIVE" property="effective" jdbcType="VARCHAR" />
+    <result column="EFFECTIVE_REMARK" property="effectiveRemark" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="DECIMAL" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="DATE" />
+    <result column="CREATE_BY" property="createBy" jdbcType="DECIMAL" />
+    <result column="MODIFY_DATE" property="modifyDate" jdbcType="DATE" />
+    <result column="MODIFY_BY" property="modifyBy" jdbcType="DECIMAL" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <result column="DESCRIPTION" property="description" jdbcType="VARCHAR" />
+    <result column="QUIT_SSB_STATUS" property="quitSsbStatus" jdbcType="DECIMAL" />
+    <collection property="socialBenefitDetails" 
+    			javaType="ArrayList" 
+    			column="id" 
+    			ofType="com.manpowergroup.cn.icloud.socialbenefitBase.entity.SocialBenefitDetail" 
+    			select="selectDetailByHeaderId"></collection>
+  </resultMap>
+
+	<!-- 获取户籍baseCode集合  -->
+	<select id="getBaseCodeListByType" parameterType="java.lang.String" resultType="com.manpowergroup.cn.icloud.socialbenefitBase.model.BaseCode">
+		SELECT ID id,
+        BD_CODE bdcode,
+        BD_NAME bdname,
+        BD_TYPE bdtype,
+        BD_STATUS bdstatus,
+        BD_REMARK bdremark,
+        CREATE_BY createBy,
+        CREATE_DATE createDate,
+        MODIFY_BY modifyBy,
+        MODIFY_DATE modifyDate,
+        SEQ seq FROM dbo.T_BASE_DATA WHERE BD_TYPE = #{socialbenefitResidency,jdbcType=VARCHAR}
+	</select>
+	
+	<!-- 获取默认Item集合  -->
+	<select id="getItemListDefault"  resultType="com.manpowergroup.cn.icloud.socialbenefitBase.model.Item">
+		SELECT item.ID id,
+        item.NAME name,
+        item.NAME_EN nameEn,
+        item.DESCRIBE describe,
+        item.REMARK remark,
+        item.STATUS status
+        FROM dbo.T_BASE_ITEM item
+        JOIN dbo.T_BASE_TYPE_ITEM typeItem ON item.ID = typeItem.ITEM_ID
+        WHERE typeItem.TYPE_ID = 1 
+	</select>
+	
+	<!-- 获取所有的ITEM集合  -->
+	<select id="getAllItemListOfSocialBenefit"  resultType="com.manpowergroup.cn.icloud.socialbenefitBase.model.Item">
+		SELECT item.ID ,
+        item.NAME ,
+        item.NAME_EN ,
+        item.DESCRIBE ,
+        item.REMARK ,
+        item.STATUS 
+        FROM dbo.T_BASE_ITEM item
+        JOIN dbo.T_BASE_TYPE_ITEM typeItem ON item.ID = typeItem.ITEM_ID
+        WHERE typeItem.TYPE_ID = 2  
+	</select>
+	
+	<!-- 分页查询社保基础信息  -->
+	<select id="query" parameterType="map" resultType="com.manpowergroup.cn.icloud.socialbenefitBase.entity.SocialBenefitHeader">
+		select max(provine.name + '-'+city.name) cityName, a.id, a.name, a.status,a.CREATE_DATE as createDate,a.MODIFY_DATE as modifyDate,
+		SUM(d.PERSON_PERCENT)AS personMonthPercent, 
+		SUM(d.COMPANY_FIX_AMOUNT)AS companyMonthAmount, 
+		SUM(d.COMPANY_PERCENT)AS companyMonthPercent, 
+		SUM(d.PERSON_FIX_AMOUNT)AS personMonthAmount, 
+		max(a.description) description
+		from dbo.T_SSB_HEADER a 
+		LEFT join dbo.T_SSB_DETAIL d on a.ID = d.HEADER_ID and d.status >= 0 
+		LEFT join dbo.T_BASE_CITY city on a.CITY_ID = city.ID 
+		LEFT join dbo.T_BASE_CITY provine on city.PARENT_ID = provine.ID 
+		<where>
+		a.status >= 0
+		<if test="cityName != null and cityName != '' ">
+		and a.city_id = #{cityName}
+		</if>
+		<if test="provinceName != null and provinceName != '' ">
+		and provine.id = #{provinceName}
+		</if>
+		<if test="list != null ">
+			and a.residency in
+			<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+			  		#{item}
+			</foreach>
+		</if>
+		<if test="name != null and name != '' ">
+		and a.name like #{name}
+		</if>
+		<if test="status != null and status != '' ">
+		and a.status =#{status}
+		</if>
+		</where>
+		group by a.name,a.id,a.status,a.CREATE_DATE,a.MODIFY_DATE,a.description order by a.ID desc
+	</select>
+	
+	<select id="count" parameterType="map" resultType="java.lang.Long">
+	SELECT COUNT(*) FROM (select max(provine.name + '-'+city.name) cityName, a.id, a.name, a.status,a.CREATE_DATE as createDate,a.MODIFY_DATE as modifyDate,
+		SUM(d.PERSON_PERCENT)AS personMonthPercent, 
+		SUM(d.COMPANY_FIX_AMOUNT)AS companyMonthAmount, 
+		SUM(d.COMPANY_PERCENT)AS companyMonthPercent, 
+		SUM(d.PERSON_FIX_AMOUNT)AS personMonthAmount, 
+		max(a.description) description
+		from dbo.T_SSB_HEADER a  
+		join dbo.T_SSB_DETAIL d on a.ID = d.HEADER_ID and d.status >= 0 
+		join dbo.T_BASE_CITY city on a.CITY_ID = city.ID 
+		join dbo.T_BASE_CITY provine on city.PARENT_ID = provine.ID 
+		<where>
+		a.status >= 0
+		<if test="cityName != null and cityName != '' ">
+		and a.city_id = #{cityName}
+		</if>
+		<if test="provinceName != null and provinceName != '' ">
+		and provine.id = #{provinceName}
+		</if>
+		<if test="list != null ">
+			and a.residency in
+			<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+			  		#{item}
+			</foreach>
+		</if>
+		<if test="name != null and name != '' ">
+		and a.name like #{name}
+		</if>
+		<if test="status != null and status != '' ">
+		and a.status =#{cityName}
+		</if>
+		</where>
+		group by a.name,a.id,a.status,a.CREATE_DATE,a.MODIFY_DATE,a.description 
+		)  cc
+	</select>
+	
+	<!-- 通过类型id获取社保 -->
+	<select id="getSocialBenefitHeader" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		SELECT	ID id,
+        NAME name,
+        CITY_ID cityId,
+        RESIDENCY residency,
+        AJUST_TIME ajustTime,
+        MONTH_ATTRIBUTE attributeMonth,
+        MONTH_EFFECTIVE monthEffctive,
+        ADD_TIME_LIMIT addLimitTime,
+        EBB_TIME_LIMIT ebbLimitTime,
+        TERM_MONTH termMonth,
+        EFFECTIVE effective,
+        EFFECTIVE_REMARK effectiveRemark,
+        STATUS status,
+        CREATE_BY createBy,
+        CREATE_DATE createDate,
+        MODIFY_BY modifyBy,
+        MODIFY_DATE modifyDate,
+        DESCRIPTION description,
+        REMARK remark,
+        QUIT_SSB_STATUS quitSsbStatus FROM dbo.T_SSB_HEADER WHERE ID = #{id}
+	</select>
+	<select id="selectDetailByHeaderId" parameterType="Integer"  resultType="com.manpowergroup.cn.icloud.socialbenefitBase.entity.SocialBenefitDetail" >
+		SELECT ID id,
+                HEADER_ID headerId,
+                ITEM_ID itemId,
+                COMPANY_PERCENT  companyPerency,
+                PERSON_PERCENT personPerency,
+                COMPANY_CAP companyCap,
+                COMPANY_FLOOR companyFloor,
+                PERSON_CAP personCap,
+                PERSON_FLOOR personFloor,
+                COMPANY_FIX_AMOUNT companyFixAmount,
+                PERSON_FIX_AMOUNT personFixAmount,
+                TERM_MONTH termMonth,
+                RESIDENCY residency,
+                AJUST_TIME ajustTime,
+                MONTH_ATTRIBUTE attributeMonth,
+                MONTH_EFFECTIVE monthEffctive,
+                ADD_TIME_LIMIT addLimitTime,
+                EBB_TIME_LIMIT ebbLimitTime,
+                EFFECTIVE effective,
+                EFFECTIVE_REMARK effectiveRemark,
+                STATUS status,
+                CREATE_BY createBy,
+                CREATE_DATE createDate,
+                MODIFY_BY modifyBy,
+                MODIFY_DATE modifyDate,
+                DESCRIPTION description,
+                REMARK remark,
+                QUIT_SSB_STATUS quitSsbStatus FROM dbo.T_SSB_DETAIL
+                WHERE HEADER_ID = #{id,jdbcType=DECIMAL}		
+  	</select>
+	
+	
+	<!-- 获取basecode集合  -->
+	<select id="findByIds" parameterType="java.util.List" resultType="com.manpowergroup.cn.icloud.socialbenefitBase.model.BaseCode">
+		SELECT ID id,
+        BD_CODE bdcode,
+        BD_NAME bdname,
+        BD_TYPE bdtype,
+        BD_STATUS bdstatus,
+        BD_REMARK bdremark,
+        CREATE_BY createBy,
+        CREATE_DATE createDate,
+        MODIFY_BY modifyBy,
+        MODIFY_DATE modifyDate,
+        SEQ seq FROM dbo.T_BASE_DATA WHERE ID in
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+			  		#{item}
+			</foreach>
+	</select>
+	
+	<!-- 获取基础数据basecode  -->
+	<select id="findUniqueBy" parameterType="Integer" resultType="com.manpowergroup.cn.icloud.socialbenefitBase.model.BaseCode">
+		SELECT ID id,
+        BD_CODE bdcode,
+        BD_NAME bdname,
+        BD_TYPE bdtype,
+        BD_STATUS bdstatus,
+        BD_REMARK bdremark,
+        CREATE_BY createBy,
+        CREATE_DATE createDate,
+        MODIFY_BY modifyBy,
+        MODIFY_DATE modifyDate,
+        SEQ seq FROM dbo.T_BASE_DATA WHERE id = #{id} 
+	</select>
+	
+	<!-- 获取基础数据basecode  -->
+	<select id="findUniqueByBDName" parameterType="String" resultType="com.manpowergroup.cn.icloud.socialbenefitBase.model.BaseCode">
+		SELECT ID id,
+        BD_CODE bdcode,
+        BD_NAME bdname,
+        BD_TYPE bdtype,
+        BD_STATUS bdstatus,
+        BD_REMARK bdremark,
+        CREATE_BY createBy,
+        CREATE_DATE createDate,
+        MODIFY_BY modifyBy,
+        MODIFY_DATE modifyDate,
+        SEQ seq FROM dbo.T_BASE_DATA WHERE BD_NAME = #{termname} 
+	</select>
+	
+	<!--获取险种信息  -->
+	<select id="findItemUniqueBy" parameterType="Integer" resultType="com.manpowergroup.cn.icloud.socialbenefitBase.model.Item">
+		SELECT item.ID id,
+        item.NAME name,
+        item.NAME_EN nameEn,
+        item.DESCRIBE describe,
+        item.REMARK remark,
+        item.STATUS status
+        FROM dbo.T_BASE_ITEM item
+        WHERE item.ID = #{id} 
+	</select>
+	
+	<!-- 更新社保基础数据状态 -->
+	<update id="changeStatus" parameterType="map" >
+	    update dbo.T_SSB_HEADER
+	    set 
+	      status = #{status}
+	    where ID = #{id}
+  </update>
+  
+  <!-- 新增社保基础信息 -->
+  <insert id="insertSocialBenefit" parameterType="com.manpowergroup.cn.icloud.socialbenefitBase.entity.SocialBenefitHeader">
+  	<![CDATA[ INSERT INTO dbo.T_SSB_HEADER
+        ( NAME ,
+          CITY_ID ,
+          RESIDENCY ,
+          AJUST_TIME ,
+          MONTH_ATTRIBUTE ,
+          MONTH_EFFECTIVE ,
+          ADD_TIME_LIMIT ,
+          EBB_TIME_LIMIT ,
+          TERM_MONTH ,
+          EFFECTIVE ,
+          EFFECTIVE_REMARK ,
+          STATUS ,
+          CREATE_BY ,
+          CREATE_DATE ,
+          MODIFY_BY ,
+          MODIFY_DATE ,
+          DESCRIPTION ,
+          REMARK ,
+          QUIT_SSB_STATUS
+        )
+	VALUES  ( #{name,jdbcType=VARCHAR}, #{cityId,jdbcType=DECIMAL}, #{residency,jdbcType=VARCHAR}, 
+      #{ajustTime,jdbcType=VARCHAR}, #{attributeMonth,jdbcType=VARCHAR}, #{monthEffctive,jdbcType=VARCHAR}, 
+      #{addLimitTime,jdbcType=DECIMAL}, #{ebbLimitTime,jdbcType=DECIMAL}, #{termMonth,jdbcType=VARCHAR},
+      #{effective,jdbcType=VARCHAR},
+      #{effectiveRemark,jdbcType=VARCHAR},  #{status,jdbcType=DECIMAL}, 
+      #{createBy,jdbcType=DECIMAL}, #{createDate,jdbcType=DATE}, #{modifyBy,jdbcType=DECIMAL},
+      #{modifyDate,jdbcType=DATE}, #{description,jdbcType=VARCHAR},
+      #{remark,jdbcType=VARCHAR},  
+      #{quitSsbStatus,jdbcType=DECIMAL}
+        )]]>
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">   
+        <![CDATA[SELECT @@IDENTITY AS id ]]>  
+    </selectKey>
+  </insert>
+  
+  <!-- 更新社保基础数据信息 -->
+  <update id="updateSocialBenefit" parameterType="com.manpowergroup.cn.icloud.socialbenefitBase.entity.SocialBenefitHeader">
+  		update dbo.T_SSB_HEADER
+  		set
+  			  NAME = #{name,jdbcType=VARCHAR},
+  			  CITY_ID =#{cityId,jdbcType=DECIMAL},
+	          RESIDENCY= #{residency,jdbcType=VARCHAR}, 
+	          AJUST_TIME=  #{ajustTime,jdbcType=VARCHAR},
+	          MONTH_ATTRIBUTE= #{attributeMonth,jdbcType=VARCHAR},
+	          MONTH_EFFECTIVE =#{monthEffctive,jdbcType=VARCHAR},
+	          ADD_TIME_LIMIT =#{addLimitTime,jdbcType=DECIMAL},
+	          EBB_TIME_LIMIT =#{ebbLimitTime,jdbcType=DECIMAL},
+	          TERM_MONTH =#{termMonth,jdbcType=VARCHAR},
+	          EFFECTIVE  =#{effective,jdbcType=VARCHAR},
+	          EFFECTIVE_REMARK =#{effectiveRemark,jdbcType=VARCHAR},
+	          STATUS =#{status,jdbcType=DECIMAL}, 
+	          CREATE_BY  =#{createBy,jdbcType=DECIMAL},
+	          CREATE_DATE =#{createDate,jdbcType=DATE},
+	          MODIFY_BY =#{modifyBy,jdbcType=DECIMAL},
+	          MODIFY_DATE =#{modifyDate,jdbcType=DATE},
+	          DESCRIPTION =#{description,jdbcType=VARCHAR},
+	          REMARK =#{remark,jdbcType=VARCHAR},
+	          QUIT_SSB_STATUS= #{quitSsbStatus,jdbcType=DECIMAL}
+	          where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  
+  <!-- 批量保存社保detail信息 -->
+  <insert id="insertSocialBenefitDetailList">
+  		begin 
+		<foreach collection="list" item="item" index="index" 
+		separator=";"> <!--分号 注意--> 
+		<!-- insert into T_SYS_USER_RESOURCE(USER_ID,RESOURCE_ID) values
+		 (#{item.userId},#{item.resourceId}) -->
+			INSERT INTO dbo.T_SSB_DETAIL
+	        ( HEADER_ID ,ITEM_ID ,COMPANY_PERCENT ,PERSON_PERCENT , COMPANY_CAP ,
+	          COMPANY_FLOOR , PERSON_CAP ,PERSON_FLOOR ,COMPANY_FIX_AMOUNT ,PERSON_FIX_AMOUNT ,
+	          TERM_MONTH , AJUST_TIME , MONTH_ATTRIBUTE ,MONTH_EFFECTIVE ,
+	          ADD_TIME_LIMIT , EBB_TIME_LIMIT , EFFECTIVE , EFFECTIVE_REMARK ,STATUS ,
+	          CREATE_BY , CREATE_DATE , MODIFY_BY ,  MODIFY_DATE , DESCRIPTION ,
+	          REMARK , QUIT_SSB_STATUS
+	        )
+			VALUES  ( #{item.headerId}, 
+	          #{item.itemId},
+	          #{item.companyPerency},
+	          #{item.personPerency},
+	          #{item.companyCap},
+	          #{item.companyFloor},
+	          #{item.personCap},
+	          #{item.personFloor},
+	          #{item.companyFixAmount},
+	          #{item.personFixAmount},
+	          #{item.termMonth},
+	          #{item.ajustTime},
+	          #{item.attributeMonth},
+	          #{item.monthEffctive},
+	          #{item.addLimitTime},
+	          #{item.ebbLimitTime},
+	          #{item.effective},
+	          #{item.effectiveRemark},
+	          #{item.status},
+	          #{item.createBy},
+	          #{item.createDate},
+	          #{item.modifyBy},
+	          #{item.modifyDate},
+	          #{item.description},
+	          #{item.remark},
+	          #{item.quitSsbStatus}
+	        )
+		</foreach> 
+		;end;
+	</insert>
+	
+	<!-- 批量更新社保基础detail信息 -->
+	<update id="updateSocialBenefitDetailList" parameterType="list">
+		begin 
+		<foreach collection="list" item="item" index="index" 
+		separator=";"> <!--分号 注意--> 
+			UPDATE dbo.T_SSB_DETAIL
+			set
+	        HEADER_ID = #{item.headerId},ITEM_ID = #{item.itemId} ,
+	        COMPANY_PERCENT=#{item.companyPerency},
+	        PERSON_PERCENT = #{item.personPerency}, COMPANY_CAP= #{item.companyCap},
+	        COMPANY_FLOOR = #{item.companyFloor},
+	        PERSON_CAP =  #{item.personCap},
+	        PERSON_FLOOR = #{item.personFloor},COMPANY_FIX_AMOUNT = #{item.companyFixAmount},
+	        PERSON_FIX_AMOUNT = #{item.personFixAmount},
+	        TERM_MONTH = #{item.termMonth},
+	        AJUST_TIME =#{item.ajustTime} , MONTH_ATTRIBUTE= #{item.attributeMonth},
+	        MONTH_EFFECTIVE = #{item.monthEffctive},
+	        ADD_TIME_LIMIT=#{item.addLimitTime}, EBB_TIME_LIMIT = #{item.ebbLimitTime}, 
+	        EFFECTIVE = #{item.effective},EFFECTIVE_REMARK = #{item.effectiveRemark}, STATUS= #{item.status},
+	        CREATE_BY = #{item.createBy}, CREATE_DATE = #{item.createDate}, 
+	        MODIFY_BY = #{item.modifyBy},  MODIFY_DATE = #{item.modifyDate},
+	        DESCRIPTION = #{item.description},
+	        REMARK = #{item.remark}, QUIT_SSB_STATUS = #{item.quitSsbStatus}
+	        where ID = #{item.id}
+	        
+	        <!-- UPDATE dbo.T_SSB_DETAIL
+			set
+	        HEADER_ID = #{item.headerId,jdbcType=DECIMAL},ITEM_ID = #{item.itemId,jdbcType=DECIMAL} ,
+	        COMPANY_PERCENT=#{item.companyPerency,jdbcType=DECIMAL},
+	        PERSON_PERCENT = #{item.personPerency,jdbcType=DECIMAL}, COMPANY_CAP= #{item.companyCap,jdbcType=DECIMAL},
+	        COMPANY_FLOOR = #{item.companyFloor,jdbcType=DECIMAL},
+	        PERSON_CAP =  #{item.personCap,jdbcType=DECIMAL},
+	        PERSON_FLOOR = #{item.personFloor,jdbcType=DECIMAL},COMPANY_FIX_AMOUNT = #{item.companyFixAmount,jdbcType=DECIMAL},
+	        PERSON_FIX_AMOUNT = #{item.personFixAmount,jdbcType=DECIMAL},
+	        TERM_MONTH = #{item.termMonth,jdbcType=VARCHAR},
+	        AJUST_TIME =#{item.ajustTime,jdbcType=DECIMAL} , MONTH_ATTRIBUTE= #{item.attributeMonth,jdbcType=DECIMAL},
+	        MONTH_EFFECTIVE = #{item.monthEffctive,jdbcType=DECIMAL},
+	        ADD_TIME_LIMIT=#{item.addLimitTime,jdbcType=DECIMAL}, EBB_TIME_LIMIT = #{item.ebbLimitTime,jdbcType=DECIMAL}, 
+	        EFFECTIVE = #{item.effective,jdbcType=VARCHAR},
+	        EFFECTIVE_REMARK = #{item.effectiveRemark,jdbcType=VARCHAR}, STATUS= #{item.status,jdbcType=DECIMAL},
+	        CREATE_BY = #{item.createBy,jdbcType=DECIMAL}, CREATE_DATE = #{item.createDate,jdbcType=DATE}, 
+	        MODIFY_BY = #{item.modifyBy,jdbcType=DECIMAL},MODIFY_DATE = #{item.modifyDate,jdbcType=DATE},
+	        DESCRIPTION = #{item.description,jdbcType=VARCHAR},
+	        REMARK = #{item.remark,jdbcType=VARCHAR}, QUIT_SSB_STATUS = #{item.quitSsbStatus,jdbcType=DECIMAL}
+	        where ID = #{item.id,jdbcType=DECIMAL} -->
+		</foreach> 
+		;end;
+	</update>
+	
+	<!-- 批量删除detail信息 -->
+	<delete id="deleteSocialBenefitDetailList" parameterType="list">  
+	  	DELETE from dbo.T_SSB_DETAIL  where ID in 
+	  	<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+	  		#{item}
+	  	</foreach>
+  	</delete>
+	
+	<!-- 查看社保是否存在 -->
+	<select id="isExsitSocialBenefit" parameterType="map" resultType="java.lang.Long">
+		select count(s.id)  from dbo.T_SSB_HEADER s where s.status >= 0
+		<if test="socialBenefitName != null and socialBenefitName != '' ">
+        	and ltrim(rtrim(s.name)) = #{socialBenefitName}
+        </if>
+        <if test="socialBenefitId != null and socialBenefitId != '' ">
+        	and id != #{socialBenefitId}
+        </if>
+	</select>
+	
+	<!-- 批量更新社保状态 -->
+	<update id="updateBatchHeader">
+		UPDATE dbo.T_SSB_HEADER SET STATUS=#{status}  WHERE STATUS ! = 0 AND STATUS IS NOT NULL and status = 2 and ID in 
+  	<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+  		#{item}
+  	</foreach>
+	</update>
+</mapper> 

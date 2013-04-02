@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.manpowergroup.cn.icloud.base.mapper.ItemTypeMapper">
+
+<!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+	<select id="query" parameterType="map" resultType="com.manpowergroup.cn.icloud.base.entity.ItemType">
+		SELECT id,name,NAME_EN AS nameEn,STATUS FROM T_BASE_TYPE t
+		<where>
+			<if test="name != null and name!='' ">
+				and NAME=#{name}
+			</if>
+		</where>
+	</select>
+
+<select id="count" parameterType="map" resultType="java.lang.Long">
+	SELECT COUNT(*) FROM (SELECT distinct id FROM T_BASE_TYPE t
+		<where>
+			<if test="name != null and name!='' ">
+				and NAME=#{name}
+			</if>
+		</where>
+		)  cc
+	</select>
+
+
+<select id="get" parameterType="java.lang.Long" resultType="com.manpowergroup.cn.icloud.base.entity.ItemType">
+	SELECT 
+		t.NAME ,
+		t.ID,
+		t.NAME_EN as nameEn,
+		t.STATUS 
+		
+		FROM T_BASE_TYPE t WHERE ID=#{id}
+	</select>
+	
+	<select id="findAll"  resultType="com.manpowergroup.cn.icloud.base.entity.ItemType">
+	SELECT 
+		t.NAME as name,
+		t.ID as id
+		FROM T_BASE_TYPE t where status=1
+	</select>
+	
+	<select id="queryItemTypeById"  parameterType="java.lang.Long" resultType="com.manpowergroup.cn.icloud.base.entity.ItemType">
+			SELECT DISTINCT typeB.name as name FROM dbo.T_BASE_TYPE typeB 
+		 JOIN dbo.T_BASE_TYPE_ITEM typeItem ON typeB.ID = typeItem.TYPE_ID 
+		 JOIN dbo.T_BASE_ITEM item ON item.ID = typeItem.ITEM_ID WHERE item.ID  =#{id}
+	</select>
+	
+	
+	
+	<update id="updateStatus" parameterType="com.manpowergroup.cn.icloud.base.entity.ItemType" >
+    update T_BASE_TYPE 
+				set 
+				STATUS=#{status:INTEGER}
+		where ID=#{id}
+  </update>
+	
+	<insert id="insert" parameterType="com.manpowergroup.cn.icloud.base.entity.ItemType" keyProperty="id" keyColumn="ID">
+		insert into T_BASE_TYPE (
+				NAME,
+				NAME_EN,
+				STATUS,
+				CREATE_BY,
+				CREATE_DATE
+		 )
+		values (
+		#{name:VARCHAR},#{nameEn:VARCHAR},#{status:INTEGER},
+		#{createBy:INTEGER},#{createDate:TIMESTAMP}
+		)
+		
+		<selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">   
+        <![CDATA[SELECT @@IDENTITY AS id ]]>  
+        </selectKey>  
+		
+	</insert>
+	
+	
+	
+	
+	<update id="update"  parameterType="com.manpowergroup.cn.icloud.base.entity.ItemType">
+		update T_BASE_TYPE 
+				set NAME =#{name:VARCHAR},
+				NAME_EN=#{nameEn:VARCHAR},
+				MODIFY_BY=#{modifyBy:INTEGER},
+				MODIFY_DATE= #{modifyDate:TIMESTAMP} 
+		where ID=#{id}
+	</update>
+
+
+</mapper> 

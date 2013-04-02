@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.manpowergroup.cn.icloud.sys.mapper.UserMapper" >
+  <resultMap id="BaseResultMap" type="com.manpowergroup.cn.icloud.sys.entity.User" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="LOGIN_NAME" property="loginName" jdbcType="VARCHAR" />
+    <result column="PASSWORD" property="password" jdbcType="VARCHAR" />
+    <result column="TRUE_NAME" property="trueName" jdbcType="VARCHAR" />
+    <result column="SEX" property="sex" jdbcType="DECIMAL" />
+    <result column="MOBILE" property="mobile" jdbcType="VARCHAR" />
+    <result column="PHONE" property="phone" jdbcType="VARCHAR" />
+    <result column="IDCARD" property="idcard" jdbcType="VARCHAR" />
+    <result column="EMAIL" property="email" jdbcType="VARCHAR" />
+    <result column="BIRTHDAY" property="birthday" jdbcType="VARCHAR" />
+    <result column="BRANCH_ID" property="branchId" jdbcType="DECIMAL" />
+    <result column="OFFICE_PHONE" property="officePhone" jdbcType="VARCHAR" />
+    <result column="IS_ORGAN_MANAGE" property="isOrganManage" jdbcType="DECIMAL" />
+    <result column="ISSYS" property="issys" jdbcType="DECIMAL" />
+    <result column="ENABLED" property="enabled" jdbcType="DECIMAL" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="DATE" />
+    <result column="CREATE_BY" property="createBy" jdbcType="DECIMAL" />
+    <result column="MODIFY_DATE" property="modifyDate" jdbcType="DATE" />
+    <result column="MODIFY_BY" property="modifyBy" jdbcType="DECIMAL" />
+    <result column="STATUS" property="status" jdbcType="DECIMAL" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <result column="orgName" property="orgName" jdbcType="VARCHAR" />
+    <result column="branchName" property="branchName" jdbcType="VARCHAR" />
+    <collection property="roleList" 
+    			javaType="ArrayList" 
+    			column="id" 
+    			ofType="com.manpowergroup.cn.icloud.sys.entity.Role" 
+    			select="selectRoleByUserId"></collection>
+  </resultMap>
+  <resultMap id="BaseResultQueryMap" type="com.manpowergroup.cn.icloud.sys.entity.User" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="LOGIN_NAME" property="loginName" jdbcType="VARCHAR" />
+    <result column="TRUE_NAME" property="trueName" jdbcType="VARCHAR" />
+    <result column="IDCARD" property="idcard" jdbcType="VARCHAR" />
+    <result column="ENABLED" property="enabled" jdbcType="DECIMAL" />
+    <result column="orgName" property="orgName" jdbcType="VARCHAR" />
+    <result column="branchName" property="branchName" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="selectRoleByUserId" parameterType="long"  resultType="com.manpowergroup.cn.icloud.sys.entity.Role" >
+	select sysRole.ID, sysRole.NAME
+		   from t_sys_user_role userRole
+		   join T_SYS_ROLE sysRole on userRole.role_id = sysRole.id
+    where userRole.user_id = #{id,jdbcType=DECIMAL}		
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="Long" >
+    delete from T_SYS_USER
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="com.manpowergroup.cn.icloud.sys.entity.User">
+  	 <selectKey resultType="long" order="BEFORE" keyProperty="id"> 
+		SELECT SEQ_SYS_USER.NEXTVAL FROM DUAL 
+	</selectKey>  
+    insert into T_SYS_USER (ID, LOGIN_NAME, PASSWORD, 
+      TRUE_NAME, SEX, MOBILE, 
+      PHONE, IDCARD, EMAIL, 
+      BIRTHDAY,  BRANCH_ID, 
+      OFFICE_PHONE, IS_ORGAN_MANAGE, ISSYS, 
+      ENABLED, CREATE_DATE, CREATE_BY, 
+      MODIFY_DATE, MODIFY_BY, STATUS, 
+      REMARK)
+    values (#{id,jdbcType=DECIMAL}, #{loginName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{trueName,jdbcType=VARCHAR}, #{sex,jdbcType=DECIMAL}, #{mobile,jdbcType=VARCHAR}, 
+      #{phone,jdbcType=VARCHAR}, #{idcard,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{birthday,jdbcType=VARCHAR},  #{branchId,jdbcType=DECIMAL}, 
+      #{officePhone,jdbcType=VARCHAR}, #{isOrganManage,jdbcType=DECIMAL}, #{issys,jdbcType=DECIMAL}, 
+      #{enabled,jdbcType=DECIMAL}, #{createDate,jdbcType=DATE}, #{createBy,jdbcType=DECIMAL}, 
+      #{modifyDate,jdbcType=DATE}, #{modifyBy,jdbcType=DECIMAL}, #{status,jdbcType=DECIMAL}, 
+      #{remark,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.manpowergroup.cn.icloud.sys.entity.User" >
+    update T_SYS_USER
+    set LOGIN_NAME = #{loginName,jdbcType=VARCHAR},
+      PASSWORD = #{password,jdbcType=VARCHAR},
+      TRUE_NAME = #{trueName,jdbcType=VARCHAR},
+      SEX = #{sex,jdbcType=DECIMAL},
+      MOBILE = #{mobile,jdbcType=VARCHAR},
+      PHONE = #{phone,jdbcType=VARCHAR},
+      IDCARD = #{idcard,jdbcType=VARCHAR},
+      EMAIL = #{email,jdbcType=VARCHAR},
+      BIRTHDAY = #{birthday,jdbcType=VARCHAR},
+      BRANCH_ID = #{branchId,jdbcType=DECIMAL},
+      OFFICE_PHONE = #{officePhone,jdbcType=VARCHAR},
+      IS_ORGAN_MANAGE = #{isOrganManage,jdbcType=DECIMAL},
+      ISSYS = #{issys,jdbcType=DECIMAL},
+      ENABLED = #{enabled,jdbcType=DECIMAL},
+      CREATE_DATE = #{createDate,jdbcType=DATE},
+      CREATE_BY = #{createBy,jdbcType=DECIMAL},
+      MODIFY_DATE = #{modifyDate,jdbcType=DATE},
+      MODIFY_BY = #{modifyBy,jdbcType=DECIMAL},
+      STATUS = #{status,jdbcType=DECIMAL},
+      REMARK = #{remark,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateStatus" parameterType="com.manpowergroup.cn.icloud.sys.entity.User" >
+    update T_SYS_USER
+    set 
+      ENABLED = #{enabled,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updatePassword" parameterType="com.manpowergroup.cn.icloud.sys.entity.User" >
+    update T_SYS_USER
+    set 
+      PASSWORD = #{password,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="Long" >
+    select ID, LOGIN_NAME, PASSWORD, TRUE_NAME, SEX, MOBILE, PHONE, IDCARD, EMAIL, BIRTHDAY, 
+    ORGAN_ID, BRANCH_ID, OFFICE_PHONE, IS_ORGAN_MANAGE, ISSYS, ENABLED, CREATE_DATE, 
+    CREATE_BY, MODIFY_DATE, MODIFY_BY, STATUS, REMARK
+    from T_SYS_USER
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <select id="selectUserByLoginName" resultMap="BaseResultMap" parameterType="String" >
+    select ID, LOGIN_NAME, PASSWORD, TRUE_NAME, SEX, MOBILE, PHONE, IDCARD, EMAIL, BIRTHDAY, 
+    ORGAN_ID, BRANCH_ID, OFFICE_PHONE, IS_ORGAN_MANAGE, ISSYS, ENABLED, CREATE_DATE, 
+    CREATE_BY, MODIFY_DATE, MODIFY_BY, STATUS, REMARK
+    from T_SYS_USER
+    where LOGIN_NAME = #{loginName,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select ID, LOGIN_NAME, PASSWORD, TRUE_NAME, SEX, MOBILE, PHONE, IDCARD, EMAIL, BIRTHDAY, 
+    ORGAN_ID, BRANCH_ID, OFFICE_PHONE, IS_ORGAN_MANAGE, ISSYS, ENABLED, CREATE_DATE, 
+    CREATE_BY, MODIFY_DATE, MODIFY_BY, STATUS, REMARK
+    from T_SYS_USER
+  </select>
+
+	<select id="selectByNameAndPassword" parameterType="map"
+		resultType="com.manpowergroup.cn.icloud.sys.entity.User">
+		select u.ID id,
+		u.LOGIN_NAME loginName,
+		u.PASSWORD password,
+		u.TRUE_NAME trueName,
+		u.SEX sex,
+		u.MOBILE mobile,
+		u.PHONE phone,
+		u.IDCARD idcard,
+		u.EMAIL email,
+		u.BIRTHDAY birthday,
+		u.ORGAN_ID organId,
+		u.BRANCH_ID branchId,
+		u.OFFICE_PHONE officePhone,
+		u.IS_ORGAN_MANAGE isOrganManage,
+		u.ISSYS issys,
+		b.VENDOR_ID vendorId
+		from T_SYS_USER u left join T_SYS_BRANCH b on b.id = u.BRANCH_ID
+		where 1=1
+		and LOGIN_NAME=#{username,jdbcType=VARCHAR}
+		and PASSWORD=#{password,jdbcType=VARCHAR}
+		and ENABLED = 1
+	</select>
+  
+   <select id="selectUserResources" parameterType="Long" resultType="com.manpowergroup.cn.icloud.sys.entity.Resource" >
+	select r.url,r.name
+	  from t_sys_resource r
+	  join t_sys_user_resource ur
+	    on r.id = ur.resource_id
+	 where ur.user_id = #{id,jdbcType=DECIMAL}
+	union all
+	select r.url,r.name
+	  from t_sys_resource r
+	  join t_sys_role_resource rr
+	    on r.id = rr.resource_id
+	 where rr.role_id in
+	       (select role_id from t_sys_user_role where user_id = #{id,jdbcType=DECIMAL})
+  </select>
+  
+  <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+	<select id="query" parameterType="map" resultMap="BaseResultQueryMap">
+		<!-- select distinct
+			sysUser.ID id,
+		    sysUser.login_name loginName,
+			sysUser.true_name trueName,
+			sysUser.IDCARD idcard,
+			sysUser.enabled enabled,
+			organ.name orgName,
+			branch.name branchName 
+			from t_sys_user sysUser
+		left join t_sys_organ organ on sysUser.organ_id = organ.id
+		left join t_sys_branch branch on sysUser.branch_id = branch.id -->
+		    select 
+   u.id id,
+   u.login_name loginName,
+   u.true_name trueName,
+   u.idcard idCard,
+   u.enabled,
+   orgName,
+   branch.name branchName
+ from t_sys_user u left join ( select user_id, wmsys.wm_concat( o.name ) orgName
+   from t_sys_user_organ uo left join t_sys_organ o on uo.organ_id=o.id
+  group by user_id) uo on u.id=uo.user_id 
+  left join t_sys_branch branch on u.branch_id = branch.id
+		<where>
+			<if test="branchId != null and branchId!='' ">
+				and u.branch_id= #{branchId}
+			</if>
+			<if test="loginName != null and loginName!='' ">
+				and u.login_name=#{loginName}
+			</if>
+			<if test="trueName != null and trueName !='' ">
+				and u.true_name=#{trueName}
+			</if>
+			<if test="idcard != null  and idcard !='' ">
+				and u.idcard=#{idcard}
+			</if>
+			<if test="enabled != null and enabled !='' ">
+				and u.enabled=#{enabled}
+			</if>
+			order by u.ID desc
+		</where>
+	</select>
+	
+	<select id="get" parameterType="Long" resultMap="BaseResultMap">
+		<!--  select sysUser.ID id,
+			sysUser.LOGIN_NAME loginName,
+			sysUser.PASSWORD password,
+			sysUser.TRUE_NAME trueName,
+			sysUser.SEX sex,
+			sysUser.MOBILE mobile,
+			sysUser.PHONE phone,
+			sysUser.IDCARD idcard,
+			sysUser.EMAIL email,
+			sysUser.BIRTHDAY birthday,
+			sysUser.ORGAN_ID organId,
+			sysUser.BRANCH_ID branchId,
+			sysUser.OFFICE_PHONE officePhone,
+			sysUser.IS_ORGAN_MANAGE isOrganManage,
+			sysUser.ISSYS issys,
+			organ.name orgName
+			from T_SYS_USER sysUser
+		left join t_sys_organ organ on sysUser.organ_id = organ.id
+		where sysUser.id=#{id} -->
+		    select sysUser.ID id,
+			sysUser.LOGIN_NAME loginName,
+			sysUser.PASSWORD password,
+			sysUser.TRUE_NAME trueName,
+			sysUser.SEX sex,
+			sysUser.MOBILE mobile,
+			sysUser.PHONE phone,
+			sysUser.IDCARD idcard,
+			sysUser.EMAIL email,
+			sysUser.BIRTHDAY birthday,
+			sysUser.ORGAN_ID organId,
+			sysUser.BRANCH_ID branchId,
+			sysUser.OFFICE_PHONE officePhone,
+			sysUser.IS_ORGAN_MANAGE isOrganManage,
+			sysUser.ISSYS issys,
+			sysUser.ORGAN_ID organId
+			from T_SYS_USER sysUser
+			where sysUser.id=#{id}
+	</select> 
+	
+	<select id="count" parameterType="map" resultType="java.lang.Long">
+	SELECT COUNT(*) FROM (SELECT distinct sysUser.id FROM T_SYS_USER sysUser
+		left join t_sys_organ organ on sysUser.organ_id = organ.id
+		left join t_sys_branch branch on sysUser.branch_id = branch.id
+		<where>
+			<if test="branchId != null and branchId!='' ">
+				and sysUser.branch_id= #{branchId}
+			</if>
+			<if test="loginName != null and loginName!='' ">
+				and sysUser.login_name=#{loginName}
+			</if>
+			<if test="trueName != null and trueName !='' ">
+				and sysUser.true_name=#{trueName}
+			</if>
+			<if test="idcard != null  and idcard !='' ">
+				and sysUser.idcard=#{idcard}
+			</if>
+			<if test="companyName != null and companyName !='' ">
+				and branch.name=#{companyName}
+			</if>
+		</where>
+		)  cc
+	</select>
+	
+	<select id="queryPasswordById" parameterType="com.manpowergroup.cn.icloud.sys.entity.User" resultType="java.lang.String">
+	SELECT PASSWORD FROM T_SYS_USER 
+	where ID = #{id,jdbcType=DECIMAL}
+	</select>
+	
+	<delete id="deleteUserResource" parameterType="long">
+		delete from T_SYS_USER_RESOURCE where user_id = #{userId}
+	</delete>
+	
+	<delete id="deleteUser" parameterType="long">
+		delete from T_SYS_USER where ID = #{id}
+	</delete>
+	
+	<insert id="batchInsertUserResources" > 
+	<!-- 这种写法不支持oracle -->
+	<!--  insert into T_SYS_USER_RESOURCE(USER_ID,RESOURCE_ID) values
+	 <foreach collection="list" item="item" index="index" separator=",">
+        (#{item.userId},#{item.resourceId})
+    </foreach> -->
+    
+    begin 
+		<foreach collection="list" item="item" index="index" 
+		separator=";"> <!--分号 注意--> 
+		insert into T_SYS_USER_RESOURCE(USER_ID,RESOURCE_ID) values
+		 (#{item.userId},#{item.resourceId})
+		</foreach> 
+		;end;
+    
+	</insert>
+	
+	<insert id="batchInsertUserOrgan" > 
+	<!-- 这种写法不支持oracle -->
+	<!--  insert into T_SYS_USER_RESOURCE(USER_ID,RESOURCE_ID) values
+	 <foreach collection="list" item="item" index="index" separator=",">
+        (#{item.userId},#{item.resourceId})
+    </foreach> -->
+    
+    begin 
+		<foreach collection="list" item="item" index="index" 
+		separator=";"> <!--分号 注意--> 
+		insert into T_SYS_USER_ORGAN(USER_ID,ORGAN_ID) values
+		 (#{item.userId},#{item.organId})
+		</foreach> 
+		;end;
+    
+	</insert>
+	
+	<delete id="deleteUserOrgan" parameterType="long">
+		delete from T_SYS_USER_ORGAN where user_id = #{userId}
+	</delete>
+	
+	
+	<select id="queryUserByOrganId" parameterType="Long" resultType="com.manpowergroup.cn.icloud.sys.entity.User">
+		  select  u.id id,
+   u.login_name loginName,
+   u.true_name trueName,
+   u.idcard idCard,
+   u.enabled,
+   orgNmae,
+   branch.name branchName,
+   u.mobile mobile,
+   u.phone phone,
+   u.email email
+    from t_sys_user u
+    left join (select user_id, wmsys.wm_concat(o.name) orgNmae
+                 from t_sys_user_organ uo
+                 left join t_sys_organ o
+                   on uo.organ_id = o.id  
+                group by user_id) uo
+      on u.id = uo.user_id
+    left join t_sys_branch branch
+      on u.branch_id = branch.id   left join t_sys_user_organ uoo on u.id=uoo.user_id where uoo.organ_id=#{id}
+	</select> 
+	
+	
+	
+	<select id="queryOrgNameByUserId" parameterType="Long" resultType="com.manpowergroup.cn.icloud.sys.entity.User">
+		 select   wmsys.wm_concat(organ_id) orgId,wmsys.wm_concat( o.name ) orgName
+         from t_sys_user_organ uo left join t_sys_organ o on uo.organ_id=o.id where user_id=#{id}
+         group by user_id 
+	</select> 
+  
+</mapper>

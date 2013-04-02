@@ -1,0 +1,100 @@
+/* CSS RESET */
+
+
+
+/* LOGIN */
+
+body#login {  
+	width: 410px; 
+}
+body#login #wrappertop{
+	width: 370px;
+}
+body#login #wrapperbottom{
+	width: 370px;
+}   
+body#login #wrapperbottom_branding{
+        width: 370px;
+        padding: 0 20px 0 20px;  
+}
+body#login #wrapperbottom_branding_text{
+        width: 370px;
+        background-color: #fff;
+        padding-top: 3px;  
+        padding-bottom: 10px;
+        color: #C0C0C0; 
+        font: 11px 'Lucida Grande', arial, sans-serif;
+}
+body#login #wrapperbottom_branding_text a{
+        color: #C0C0C0; 
+}
+body#login #wrapper{
+	width: 370px;
+	padding: 0 20px 0 20px;
+}
+body#login #content{
+	width: 370px;
+}
+body#login #header {
+	width: 350px;
+}
+body#login fieldset{
+	width: 330px;
+	border: 0;
+	margin: 0px;
+	display: block;
+	margin-top: -30px;
+	background-color: #fff;
+	padding-top: 20px;
+}
+body#login fieldset p{
+	color: #333333;
+}
+body#login fieldset p.error{
+	padding: 10px 10px 10px 10px;
+	color: #7b0c00;
+	display: block;
+	border: 2px solid #bc6f6b;
+	background: #eac5c5;
+	margin-bottom: 20px;
+	font-weight: bold;
+	}
+body#login fieldset p.error img{
+	margin-right: 5px;
+	}	
+body#login label{
+	float: left;
+	text-align: right;
+	width: 70px;
+	font-weight: bold;
+	margin-right: 10px;
+	padding-top: 7px;
+}
+body#login input{
+	height: 20px;
+	width: 238px;
+	_width: 237px;
+	margin-bottom: 15px;
+	padding: 3px;
+	font: 16px 'Lucida Grande', arial, sans-serif;
+}
+body#login .form button{
+    display:block;
+    float:left;
+    margin:0 3px 0 80px;
+    _margin-left: 42px;
+}
+#forgottenpassword{ 
+	margin-top: 7px;
+}
+#forgottenpassword a{
+	color: #333333;
+	}
+#forgottenpassword a:hover{
+	color: #104b67; 
+}
+#forgottenpassword li{ 
+	display: inline; 
+	margin-left: 10px; 
+} 
+

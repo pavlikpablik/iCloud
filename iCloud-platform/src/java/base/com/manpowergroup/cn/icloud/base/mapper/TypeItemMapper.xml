@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.manpowergroup.cn.icloud.base.mapper.TypeItemMapper">
+
+<select id="queryTypeItem" parameterType="java.lang.Long" resultType="com.manpowergroup.cn.icloud.base.entity.TypeItem">
+	SELECT id,TYPE_ID AS typeId,item_id AS itemId,STATUS FROM T_BASE_TYPE_ITEM WHERE ITEM_ID=#{id}
+</select>
+
+<delete id="deleteTypeItem" parameterType="Long" >
+    delete from T_BASE_TYPE_ITEM
+    where ID = #{id}
+</delete>
+
+<insert id="insert" parameterType="com.manpowergroup.cn.icloud.base.entity.TypeItem" keyProperty="id" keyColumn="ID">
+		insert into T_BASE_TYPE_ITEM (
+				TYPE_ID,
+				ITEM_ID,
+				STATUS,
+				CREATE_BY,
+				CREATE_DATE
+		 )
+		values (
+		#{typeId:INTEGER},#{itemId:INTEGER},#{status:INTEGER},
+		#{createBy:INTEGER},#{createDate:TIMESTAMP}
+		)
+		
+		<selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">   
+        <![CDATA[SELECT @@IDENTITY AS id ]]>  
+        </selectKey>  
+		
+	</insert>
+
+</mapper> 

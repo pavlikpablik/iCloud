@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.manpowergroup.cn.icloud.sys.mapper.ResourceMapper" >
+  <!-- <cache eviction="LRU" type="com.manpowergroup.cn.core.memcached.MemcachedCache"></cache> -->
+  <resultMap id="BaseResultMap" type="com.manpowergroup.cn.icloud.sys.entity.Resource" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="URL" property="url" jdbcType="VARCHAR" />
+    <result column="FULL_NAME" property="fullName" jdbcType="VARCHAR" />
+    <result column="TYPE" property="type" jdbcType="DECIMAL" />
+    <result column="ISSYS" property="issys" jdbcType="DECIMAL" />
+    <result column="SORT" property="sort" jdbcType="DECIMAL" />
+    <result column="ENABLED" property="enabled" jdbcType="DECIMAL" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="DATE" />
+    <result column="CREATE_BY" property="createBy" jdbcType="DECIMAL" />
+    <result column="MODIFY_DATE" property="modifyDate" jdbcType="DATE" />
+    <result column="MODIFY_BY" property="modifyBy" jdbcType="DECIMAL" />
+    <result column="STATUS" property="status" jdbcType="DECIMAL" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <result column="SOURCE_LEVEL" property="sourceLevel" jdbcType="DECIMAL" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="Long" >
+    delete from T_SYS_RESOURCE
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <!--<insert id="insert" parameterType="com.manpowergroup.cn.icloud.sys.entity.Resource" >
+    insert into T_SYS_RESOURCE (ID, NAME, URL, 
+      FULL_NAME, TYPE, ISSYS, 
+      SORT, ENABLED, CREATE_DATE, 
+      CREATE_BY, MODIFY_DATE, MODIFY_BY, 
+      STATUS, REMARK,SOURCE_LEVEL)
+    values (#{id,jdbcType=DECIMAL}, #{name,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, 
+      #{fullName,jdbcType=VARCHAR}, #{type,jdbcType=DECIMAL}, #{issys,jdbcType=DECIMAL}, 
+      #{sort,jdbcType=DECIMAL}, #{enabled,jdbcType=DECIMAL}, #{createDate,jdbcType=DATE}, 
+      #{createBy,jdbcType=DECIMAL}, #{modifyDate,jdbcType=DATE}, #{modifyBy,jdbcType=DECIMAL}, 
+      #{status,jdbcType=DECIMAL}, #{remark,jdbcType=VARCHAR}, #{resourceLevel,jdbcType=DECIMAL})
+  </insert>
+  --><update id="updateByPrimaryKey" parameterType="com.manpowergroup.cn.icloud.sys.entity.Resource" >
+    update T_SYS_RESOURCE
+    set NAME = #{name,jdbcType=VARCHAR},
+      URL = #{url,jdbcType=VARCHAR}, 
+      FULL_NAME = #{fullName,jdbcType=VARCHAR},
+      TYPE = #{type,jdbcType=DECIMAL},
+      ISSYS = #{issys,jdbcType=DECIMAL},
+      SORT = #{sort,jdbcType=DECIMAL},
+      ENABLED = #{enabled,jdbcType=DECIMAL},
+      CREATE_DATE = #{createDate,jdbcType=DATE},
+      CREATE_BY = #{createBy,jdbcType=DECIMAL},
+      MODIFY_DATE = #{modifyDate,jdbcType=DATE},
+      MODIFY_BY = #{modifyBy,jdbcType=DECIMAL},
+      STATUS = #{status,jdbcType=DECIMAL},
+      REMARK = #{remark,jdbcType=VARCHAR},
+      SOURCE_LEVEL = #{sourceLevel,jdbcType=VARCHAR},
+      PARENT_ID=#{parentId:DECIMAL}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="Long" >
+    select ID, NAME, URL, FULL_NAME, TYPE, ISSYS, SORT, ENABLED, CREATE_DATE, CREATE_BY, 
+    MODIFY_DATE, MODIFY_BY, STATUS, REMARK,SOURCE_LEVEL
+    from T_SYS_RESOURCE
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select ID, NAME, URL, FULL_NAME, TYPE, ISSYS, SORT, ENABLED, CREATE_DATE, CREATE_BY, 
+    MODIFY_DATE, MODIFY_BY, STATUS, REMARK,SOURCE_LEVEL
+    from T_SYS_RESOURCE
+  </select>
+  
+  
+  
+  
+  
+  
+  
+  
+  	<select id="get" parameterType="Long" resultType="com.manpowergroup.cn.icloud.sys.entity.Resource">
+	SELECT 
+		ID as id,
+		NAME as name,
+		URL as url,
+		FULL_NAME as fullName,
+		TYPE as type,
+		ISSYS as issys,
+		SORT as sort,
+		ENABLED as enabled,
+		REMARK as remark,
+		SOURCE_LEVEL as sourceLevel,
+		PARENT_ID as parentId
+		FROM T_SYS_RESOURCE res WHERE ID=#{id}
+	</select>
+	
+	
+	<insert id="insert" parameterType="com.manpowergroup.cn.icloud.sys.entity.Resource" keyProperty="id" keyColumn="ID">
+	 <selectKey resultType="Long" keyProperty="id" order="BEFORE" >  
+   		SELECT SEQ_BASE_MENU.NEXTVAL FROM DUAL  
+  	 </selectKey>  
+		insert into T_SYS_RESOURCE (ID,
+				FULL_NAME,
+				TYPE,
+				ISSYS,
+				ENABLED,
+				CREATE_BY,
+				CREATE_DATE,
+				REMARK,
+				SORT,
+				URL,
+				SOURCE_LEVEL,
+				PARENT_ID,
+				NAME
+				
+		 )
+		values (#{id:INTEGER},
+		#{fullName:VARCHAR},
+		#{type:INTEGER},
+		#{issys:INTEGER},
+		#{enabled:INTEGER},
+		#{createBy:INTEGER},
+		#{createDate:TIMESTAMP},
+		#{remark:VARCHAR},
+		#{sort:INTEGER},
+		#{url:VARCHAR},
+		#{sourceLevel:INTEGER},
+		#{parentId:DECIMAL},
+		#{name:VARCHAR}
+		
+		)
+	</insert>
+	
+	<select id="getResourceByLevel" parameterType="Long" resultType="com.manpowergroup.cn.icloud.sys.entity.Resource">
+	SELECT 
+		ID as id,
+		NAME as name,
+		URL as url,
+		FULL_NAME as fullName,
+		TYPE as type,
+		ISSYS as issys,
+		SORT as sort,
+		ENABLED as enabled,
+		STATUS as status,
+		REMARK as remark,
+		SOURCE_LEVEL as sourceLevel,
+		PARENT_ID as parentId
+		FROM T_SYS_RESOURCE res WHERE SOURCE_LEVEL=#{level,jdbcType=DECIMAL}
+	</select>
+	
+	<select id="getResourceById" parameterType="Long" resultType="com.manpowergroup.cn.icloud.sys.entity.Resource">
+	select  ID as id,
+    NAME as name,
+    URL as url,
+    FULL_NAME as fullName,
+    TYPE as type,
+    ISSYS as issys,
+    SORT as sort,
+    ENABLED as enabled,
+    STATUS as status,
+    REMARK as remark,
+    SOURCE_LEVEL as sourceLevel,
+	PARENT_ID as parentId from T_SYS_RESOURCE   where ID=#{id}  ORDER BY SOURCE_LEVEL desc
+	</select>
+	
+	
+	
+	<select id="getResourceList"  resultType="com.manpowergroup.cn.icloud.sys.entity.Resource">
+	select  ID as id,
+    NAME as name,
+    URL as url,
+    FULL_NAME as fullName,
+    TYPE as type,
+    ISSYS as issys,
+    SORT as sort,
+    ENABLED as enabled,
+    STATUS as status,
+    REMARK as remark,
+    SOURCE_LEVEL as sourceLevel,
+    PARENT_ID as parentId from T_SYS_RESOURCE where SOURCE_LEVEL>0 order by SORT
+	</select>
+	
+	
+	
+	
+	<select id="queryResourceByPid" parameterType="Long" resultType="com.manpowergroup.cn.icloud.sys.entity.Resource">
+	select  ID as id,
+    NAME as name,
+    URL as url,
+    FULL_NAME as fullName,
+    TYPE as type,
+    ISSYS as issys,
+    SORT as sort,
+    ENABLED as enabled,
+    STATUS as status,
+    REMARK as remark,
+    SOURCE_LEVEL as sourceLevel,
+	PARENT_ID as parentId from T_SYS_RESOURCE   where ID=#{pid}  
+	</select>
+	
+	
+	
+	
+	
+    <select id="queryByPid" parameterType="com.manpowergroup.cn.icloud.sys.entity.Resource" resultType="com.manpowergroup.cn.icloud.sys.entity.Resource">
+	select  ID as id,
+    NAME as name,
+    URL as url,
+    FULL_NAME as fullName,
+    TYPE as type,
+    ISSYS as issys,
+    SORT as sort,
+    ENABLED as enabled,
+    STATUS as status,
+    REMARK as remark,
+    SOURCE_LEVEL as sourceLevel,
+	PARENT_ID as parentId from T_SYS_RESOURCE   where PARENT_ID=#{id:DECIMAL}  
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<select id="queryMaxSort"  resultType="java.lang.Integer">
+	select max(SORT)  from T_SYS_RESOURCE where SOURCE_LEVEL=1
+	</select>
+	
+	<select id="queryParentSort"  parameterType="com.manpowergroup.cn.icloud.sys.entity.Resource" resultType="java.lang.Integer">
+	select count(*) as sort from T_SYS_RESOURCE 
+	</select>
+	
+	<select id="queryOldSort"  parameterType="com.manpowergroup.cn.icloud.sys.entity.Resource" resultType="java.lang.Integer">
+	select count(*) as sort from T_SYS_RESOURCE where 
+	ID=#{id:INTEGER} 
+	and 
+	PARENT_ID=#{parentId:DECIMAL}
+	</select>
+	
+	
+	<select id="search"  resultType="Resource">
+		select r.ID as id,r.NAME as name,r.URL as url,
+		r.FULL_NAME as fullName,r.TYPE as type,r.ISSYS as issys,
+		r.SORT as sort,r.ENABLED as enabled,r.REMARK as remark,
+		r.SOURCE_LEVEL as sourceLevel,r.PARENT_ID as parentId 
+		from T_SYS_RESOURCE r  order by sort asc
+	</select>
+	
+	<select id="count"  resultType="java.lang.Long">
+	select count(*) from (select distinct ID from T_SYS_RESOURCE r) rr
+	</select>
+</mapper>
+
+
+
+
+
+
+

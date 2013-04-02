@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.manpowergroup.cn.icloud.socialbenefit.mapper.SsbAjustMapper" >
+  <resultMap id="BaseResultMap" type="com.manpowergroup.cn.icloud.socialbenefit.entity.SsbAjust" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="CANDIDATE_ID" property="candidateId" jdbcType="DECIMAL" />
+    <result column="AJUSTMENT_STATUS" property="ajustmentStatus" jdbcType="DECIMAL" />
+    <result column="MONTH_FEE" property="monthFee" jdbcType="VARCHAR" />
+    <result column="SSB_ID" property="ssbId" jdbcType="DECIMAL" />
+    <result column="SSB_NAME" property="ssbName" jdbcType="VARCHAR" />
+    <result column="CANDIDATE_NAME" property="candidateName" jdbcType="VARCHAR" />
+    <result column="RULE_ID" property="ruleId" jdbcType="DECIMAL" />
+    <result column="CANDIDATE_NO" property="candidateNo" jdbcType="VARCHAR" />
+    <result column="VENDOR_ID" property="vendorId" jdbcType="DECIMAL" />
+    <result column="CREATE_BY" property="createBy" jdbcType="DECIMAL" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="STATUS" property="status" jdbcType="DECIMAL" />
+    <result column="MODIFY_BY" property="modifyBy" jdbcType="DECIMAL" />
+    <result column="MODIFY_DATE" property="modifyDate" jdbcType="TIMESTAMP" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="BaseResultSsbAjustMap" type="com.manpowergroup.cn.icloud.socialbenefit.entity.SsbAjust" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="CANDIDATE_ID" property="candidateId" jdbcType="DECIMAL" />
+    <result column="AJUSTMENT_STATUS" property="ajustmentStatus" jdbcType="DECIMAL" />
+    <result column="MONTH_FEE" property="monthFee" jdbcType="VARCHAR" />
+    <result column="SSB_ID" property="ssbId" jdbcType="DECIMAL" />
+    <result column="SSB_NAME" property="ssbName" jdbcType="VARCHAR" />
+    <result column="CANDIDATE_NAME" property="candidateName" jdbcType="VARCHAR" />
+    <result column="RULE_ID" property="ruleId" jdbcType="DECIMAL" />
+    <result column="CANDIDATE_NO" property="candidateNo" jdbcType="VARCHAR" />
+    <result column="VENDOR_ID" property="vendorId" jdbcType="DECIMAL" />
+    <result column="CREATE_BY" property="createBy" jdbcType="DECIMAL" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="STATUS" property="status" jdbcType="DECIMAL" />
+    <result column="MODIFY_BY" property="modifyBy" jdbcType="DECIMAL" />
+    <result column="MODIFY_DATE" property="modifyDate" jdbcType="TIMESTAMP" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <collection property="candAjustmentssbDetails" 
+    			javaType="ArrayList" 
+    			column="id" 
+    			ofType="com.manpowergroup.cn.icloud.socialbenefit.entity.SsbAjustDetail" 
+    			select="selectDetailByAjustId"></collection>
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="Long" >
+    delete from T_CAND_SSB_AJUSTMENT
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  
+   <delete id="deleteAjustMent" parameterType="Integer" >
+    delete from T_CAND_SSB_AJUSTMENT
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  
+  <insert id="insert" parameterType="com.manpowergroup.cn.icloud.socialbenefit.entity.SsbAjust" >
+    insert into T_CAND_SSB_AJUSTMENT (ID, CANDIDATE_ID, AJUSTMENT_STATUS, 
+      MONTH_FEE, SSB_ID, SSB_NAME, 
+      CANDIDATE_NAME, RULE_ID, CANDIDATE_NO, 
+      VENDOR_ID, CREATE_BY, CREATE_DATE, 
+      STATUS, MODIFY_BY, MODIFY_DATE, 
+      REMARK)
+    values (#{id,jdbcType=DECIMAL}, #{candidateId,jdbcType=DECIMAL}, #{ajustmentStatus,jdbcType=DECIMAL}, 
+      #{monthFee,jdbcType=VARCHAR}, #{ssbId,jdbcType=DECIMAL}, #{ssbName,jdbcType=VARCHAR}, 
+      #{candidateName,jdbcType=VARCHAR}, #{ruleId,jdbcType=DECIMAL}, #{candidateNo,jdbcType=VARCHAR}, 
+      #{vendorId,jdbcType=DECIMAL}, #{createBy,jdbcType=DECIMAL}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{status,jdbcType=DECIMAL}, #{modifyBy,jdbcType=DECIMAL}, #{modifyDate,jdbcType=TIMESTAMP}, 
+      #{remark,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.manpowergroup.cn.icloud.socialbenefit.entity.SsbAjust" >
+    update T_CAND_SSB_AJUSTMENT
+    set CANDIDATE_ID = #{candidateId,jdbcType=DECIMAL},
+      AJUSTMENT_STATUS = #{ajustmentStatus,jdbcType=DECIMAL},
+      MONTH_FEE = #{monthFee,jdbcType=VARCHAR},
+      SSB_ID = #{ssbId,jdbcType=DECIMAL},
+      SSB_NAME = #{ssbName,jdbcType=VARCHAR},
+      CANDIDATE_NAME = #{candidateName,jdbcType=VARCHAR},
+      RULE_ID = #{ruleId,jdbcType=DECIMAL},
+      CANDIDATE_NO = #{candidateNo,jdbcType=VARCHAR},
+      VENDOR_ID = #{vendorId,jdbcType=DECIMAL},
+      CREATE_BY = #{createBy,jdbcType=DECIMAL},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      STATUS = #{status,jdbcType=DECIMAL},
+      MODIFY_BY = #{modifyBy,jdbcType=DECIMAL},
+      MODIFY_DATE = #{modifyDate,jdbcType=TIMESTAMP},
+      REMARK = #{remark,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="Long" >
+    select ID, CANDIDATE_ID, AJUSTMENT_STATUS, MONTH_FEE, SSB_ID, SSB_NAME, CANDIDATE_NAME, 
+    RULE_ID, CANDIDATE_NO, VENDOR_ID, CREATE_BY, CREATE_DATE, STATUS, MODIFY_BY, MODIFY_DATE, 
+    REMARK
+    from T_CAND_SSB_AJUSTMENT
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select ID, CANDIDATE_ID, AJUSTMENT_STATUS, MONTH_FEE, SSB_ID, SSB_NAME, CANDIDATE_NAME, 
+    RULE_ID, CANDIDATE_NO, VENDOR_ID, CREATE_BY, CREATE_DATE, STATUS, MODIFY_BY, MODIFY_DATE, 
+    REMARK
+    from T_CAND_SSB_AJUSTMENT
+  </select>
+  
+  <select id="queryCandAjustSsbByCondition" resultType="com.manpowergroup.cn.icloud.socialbenefit.entity.SsbAjust" parameterType="map" >
+    select distinct ment.ID id,ment.CANDIDATE_ID candidateId,ment.CANDIDATE_NAME candidateName,
+	ment.CANDIDATE_NO candidateNo,
+	ment.SSB_NAME ssbName,ment.MONTH_FEE monthFee,ment.AJUSTMENT_STATUS ajustmentStatus,
+	(select sum(sumDetail.PERSON_AMOUNT) from t_cand_ssb_ajustment_detail sumDetail where sumDetail.ajustment_header_id = ment.id) as personAmount,
+	(select sum(sumDetail.COMPANY_AMOUNT) from t_cand_ssb_ajustment_detail sumDetail where sumDetail.ajustment_header_id = ment.id) as  companyAmount
+	from t_cand_ssb_ajustment ment
+	<!-- where ment.vendor_id= #{vendorId} --> 
+	<where>
+			<if test="vendorId != null and vendorId!='' ">
+				and ment.vendor_id= #{vendorId} 
+			</if>
+			<if test="candidateId != null and candidateId!='' ">
+				and ment.CANDIDATE_ID=#{candidateId}
+			</if>
+			<if test="candidateName != null and candidateName !='' ">
+				and ment.CANDIDATE_NAME=#{candidateName}
+			</if>
+			<if test="candidateNo != null  and candidateNo !='' ">
+				and ment.CANDIDATE_NO=#{candidateNo}
+			</if>
+			<if test="monthFee != null and monthFee !='' ">
+				and ment.MONTH_FEE=#{monthFee}
+			</if>
+			<if test="ajuststatus != null and ajuststatus !='' ">
+				and ment.AJUSTMENT_STATUS=#{ajuststatus}
+			</if>
+		</where>
+		order by ment.ID desc
+  </select>
+  
+  <select id="count" parameterType="map" resultType="java.lang.Long">
+	SELECT COUNT(*) FROM    ( select distinct ment.ID id,ment.CANDIDATE_ID candidateId,ment.CANDIDATE_NAME candidateName,ment.CANDIDATE_NO candidateNo,
+	ment.SSB_NAME ssbName,ment.MONTH_FEE monthFee,ment.AJUSTMENT_STATUS ajustmentStatus,detail.PERSON_AMOUNT personAmount,detail.COMPANY_AMOUNT companyAmout
+	from t_cand_ssb_ajustment ment 
+	left join t_cand_ssb_ajustment_detail detail 
+	on ment.ID=detail.ajustment_header_id 
+	<where>
+			<if test="vendorId != null and vendorId!='' ">
+				and ment.vendor_id= #{vendorId} 
+			</if>
+			<if test="candidateId != null and candidateId!='' ">
+				and ment.CANDIDATE_ID=#{candidateId}
+			</if>
+			<if test="candidateName != null and candidateName !='' ">
+				and ment.CANDIDATE_NAME=#{candidateName}
+			</if>
+			<if test="candidateNo != null  and candidateNo !='' ">
+				and ment.CANDIDATE_NO=#{candidateNo}
+			</if>
+			<if test="monthFee != null and monthFee !='' ">
+				and ment.MONTH_FEE=#{monthFee}
+			</if>
+			<if test="ajuststatus != null and ajuststatus !='' ">
+				and ment.AJUSTMENT_STATUS=#{ajuststatus}
+			</if>
+		</where>
+	 ) aa
+	</select>
+	
+	
+	
+	
+	<insert id="insertSsbAjustMent" parameterType="com.manpowergroup.cn.icloud.socialbenefit.entity.SsbAjust" keyProperty="id" keyColumn="ID">
+	 <selectKey resultType="Integer" keyProperty="id" order="BEFORE" >  
+   		SELECT SEQ_CAND_SSB_AJUSTMENT.NEXTVAL FROM DUAL  
+  	 </selectKey>  
+		 insert into T_CAND_SSB_AJUSTMENT (ID, CANDIDATE_ID, AJUSTMENT_STATUS, 
+      MONTH_FEE, SSB_ID, SSB_NAME, 
+      CANDIDATE_NAME, RULE_ID, CANDIDATE_NO, 
+      VENDOR_ID, CREATE_BY, CREATE_DATE, 
+       MODIFY_BY, MODIFY_DATE
+      )
+    values (#{id,jdbcType=DECIMAL}, #{candidateId,jdbcType=DECIMAL}, #{ajustmentStatus,jdbcType=DECIMAL}, 
+      #{monthFee,jdbcType=VARCHAR}, #{ssbId,jdbcType=DECIMAL}, #{ssbName,jdbcType=VARCHAR}, 
+      #{candidateName,jdbcType=VARCHAR}, #{ruleId,jdbcType=DECIMAL}, #{candidateNo,jdbcType=VARCHAR}, 
+      #{vendorId,jdbcType=DECIMAL}, #{createBy,jdbcType=DECIMAL}, #{createDate,jdbcType=TIMESTAMP}, 
+       #{modifyBy,jdbcType=DECIMAL}, #{modifyDate,jdbcType=TIMESTAMP})
+	</insert>
+	<select id="querySsbAjust" resultMap="BaseResultSsbAjustMap" parameterType="Long" >
+    select ID, CANDIDATE_ID candidateId, AJUSTMENT_STATUS ajustmentStatus, MONTH_FEE monthFee, SSB_ID ssbId, SSB_NAME ssbName, CANDIDATE_NAME candidateName, 
+    RULE_ID ruleId, CANDIDATE_NO candidateNo, VENDOR_ID vendorId, 
+    CREATE_BY createBy, CREATE_DATE createDate, STATUS status, MODIFY_BY modifyBy, MODIFY_DATE modifyDate, 
+    REMARK remark
+    from T_CAND_SSB_AJUSTMENT
+    where ID = #{id,jdbcType=DECIMAL}
+  	</select>
+  	<select id="selectDetailByAjustId" parameterType="Long"  resultType="com.manpowergroup.cn.icloud.socialbenefit.entity.SsbAjustDetail" >
+	select detail.id id, detail.ajustment_header_id ajustmentHeaderId,
+	detail.item_id itemId,
+	detail.item_name itemName,
+	detail.person_amount personAmount,
+	detail.company_amount companyAmount,detail.month_attribute monthAttribute,
+	detail.create_by createBy,
+	detail.create_date createDate,
+	detail.status status,
+	detail.modify_by modifyBy,
+	detail.modify_date modifyDate,
+	detail.remark remark 
+	from t_cand_ssb_ajustment_detail detail 
+	where detail.ajustment_header_id = #{id,jdbcType=DECIMAL}	
+  </select>  
+  
+  
+  <update id="changeStatusAll" parameterType="map">  
+  	UPDATE T_CAND_SSB_AJUSTMENT  SET AJUSTMENT_STATUS=#{status}  WHERE AJUSTMENT_STATUS = 0 AND ID in 
+  	<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+  		#{item}
+  	</foreach>
+  </update>
+   		
+  
+  
+  
+  
+  
+  
+  <select id="queryByPrimaryKey" resultMap="BaseResultMap" parameterType="Integer" >
+    select ID, CANDIDATE_ID, AJUSTMENT_STATUS, MONTH_FEE, SSB_ID, SSB_NAME, CANDIDATE_NAME, 
+    RULE_ID, CANDIDATE_NO, VENDOR_ID, CREATE_BY, CREATE_DATE, STATUS, MODIFY_BY, MODIFY_DATE, 
+    REMARK
+    from T_CAND_SSB_AJUSTMENT
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  
+  <update id="updateSsbAjustMentById" parameterType="com.manpowergroup.cn.icloud.socialbenefit.entity.SsbAjust" >
+    update T_CAND_SSB_AJUSTMENT
+    set CANDIDATE_ID = #{candidateId,jdbcType=DECIMAL},
+      AJUSTMENT_STATUS = #{ajustmentStatus,jdbcType=DECIMAL},
+      MONTH_FEE = #{monthFee,jdbcType=VARCHAR},
+      SSB_ID = #{ssbId,jdbcType=DECIMAL},
+      SSB_NAME = #{ssbName,jdbcType=VARCHAR},
+      CANDIDATE_NAME = #{candidateName,jdbcType=VARCHAR},
+      RULE_ID = #{ruleId,jdbcType=DECIMAL},
+      CANDIDATE_NO = #{candidateNo,jdbcType=VARCHAR},
+      VENDOR_ID = #{vendorId,jdbcType=DECIMAL},
+      MODIFY_BY = #{modifyBy,jdbcType=DECIMAL},
+      MODIFY_DATE = #{modifyDate,jdbcType=TIMESTAMP}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  
+  
+   <update id="updateStatus" parameterType="com.manpowergroup.cn.icloud.socialbenefit.entity.SsbAjust" >
+    update T_CAND_SSB_AJUSTMENT
+    set AJUSTMENT_STATUS = #{ajustmentStatus,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+</mapper>

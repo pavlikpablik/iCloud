@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.manpowergroup.cn.icloud.sys.mapper.TreeMapper" >
+  
+  <resultMap id="treeResultMap" type="com.manpowergroup.cn.icloud.sys.model.Tree" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="PRANET_ID" property="pId" jdbcType="DECIMAL" />
+    <result column="checked" property="checked" jdbcType="VARCHAR" typeHandler="com.manpowergroup.cn.core.orm.myBatis.BooleanTypeHandler"/>
+  </resultMap>
+  
+	<resultMap id="treeUserResultMap" type="com.manpowergroup.cn.icloud.sys.model.Tree" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+     <result column="checked" property="checked" jdbcType="VARCHAR" typeHandler="com.manpowergroup.cn.core.orm.myBatis.BooleanTypeHandler"/>
+  </resultMap>
+	
+	<select id="queryallResource"  resultMap="treeResultMap" parameterType="long">
+	select r.id,
+	       (r.full_name || (case
+	         when r.type = 0 then
+	          '(菜单)'
+	         else
+	          '(按钮)'
+	       end)) name,
+	       r.parent_id pid,
+	       (case
+	         when ur.resource_id is not null then
+	          'Y'
+	         else
+	          'N'
+	       end) checked
+	  from t_sys_resource r
+	  left join t_sys_user_resource ur
+	    on r.id = ur.resource_id
+	   and ur.user_id = #{operatorId,jdbcType=DECIMAL}
+	   and r.enabled = 1
+	 order by sort asc
+	</select>
+	
+	<select id="queryallUserByBranchId" parameterType="map" resultMap="treeUserResultMap">
+	select u.id id,u.login_name || '(' || u.true_name || ')'  name ,
+	 (case
+	           when ur.user_id is not null then
+	            'Y'
+	           else
+	            'N'
+	         end) checked
+	 from t_sys_user u left join t_sys_user_role ur 
+	 on u.id=ur.user_id and ur.role_id=#{roleId,jdbcType=DECIMAL} 
+	 where u.branch_id=#{branchId,jdbcType=DECIMAL}
+	 and u.enabled = 1
+	</select>
+	
+	<!-- 查询权限组与资源的关系 -->
+	<select id="queryAllResourceByRoleId"  resultMap="treeResultMap" parameterType="long">
+	select r.id,
+	       (r.full_name || (case
+	         when r.type = 0 then
+	          '(菜单)'
+	         else
+	          '(按钮)'
+	       end)) name,
+	       r.parent_id pid,
+	       (case
+	         when rr.resource_id is not null then
+	          'Y'
+	         else
+	          'N'
+	       end) checked
+	  from t_sys_resource r
+	  left join t_sys_role_resource rr
+	    on r.id = rr.resource_id
+	   and rr.role_id = #{roleId,jdbcType=DECIMAL}
+	   and r.enabled = 1
+	 order by sort asc
+	</select>
+	
+	
+	<select id="queryRoleByUser"  resultMap="treeResultMap" parameterType="map">
+	select r.id,
+         (r.name) name,
+          '1' pid,
+         (case
+           when ur.role_id is not null then
+            'Y'
+           else
+            'N'
+         end) checked
+    from t_sys_role r
+    left join t_sys_user_role ur
+     on r.id = ur.role_id
+     and ur.user_id = #{userId}
+     where r.BRANCH_ID = #{branchId}
+     and r.enabled = 1
+	 order by sort asc
+	</select>
+	
+	
+</mapper>
+
+
+
+
+
+
+

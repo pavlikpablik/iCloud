@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC 
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="socialbenefit" extends='manpowergroup' namespace="/">
+		<action name="socialbenefit_*" class="com.manpowergroup.cn.icloud.socialbenefit.web.SocialBenefitAction" method="{1}">
+			<result name="page">/WEB-INF/jsp/socialbenefit/ssbDeclara/page.jsp</result>
+		</action>
+		
+		<action name="ssbdeclarationconfirmation_*" class="com.manpowergroup.cn.icloud.socialbenefit.web.SsbDeclarationConfirmationAction" method="{1}">
+			<result name="page">/WEB-INF/jsp/socialbenefit/ssbDeclarationConfirmation/page.jsp</result>
+			<result name="importPre">/WEB-INF/jsp/socialbenefit/ssbDeclarationConfirmation/import.jsp</result>
+			<result name="importinfo">/WEB-INF/jsp/socialbenefit/ssbDeclarationConfirmation/showmessage.jsp</result>
+		</action>
+		<action name="ssbajustment_*" class="com.manpowergroup.cn.icloud.socialbenefit.web.SsbAjustMentAction" method="{1}">
+			<result name="page">/WEB-INF/jsp/socialbenefit/ssbAjustMent/page.jsp</result>
+			<result name="edit">/WEB-INF/jsp/socialbenefit/ssbAjustMent/edit.jsp</result>
+			<result name="addItemNew">WEB-INF/jsp/socialbenefit/ssbAjustMent/edit-itemlist.jsp</result>
+			<result name="importPre">/WEB-INF/jsp/socialbenefit/ssbAjustMent/import.jsp</result>
+			<result name="importinfo">/WEB-INF/jsp/socialbenefit/ssbAjustMent/showmessage.jsp</result>
+			<result name="detail">/WEB-INF/jsp/socialbenefit/ssbAjustMent/detail.jsp</result>
+			<result name="list">/WEB-INF/jsp/socialbenefit/ssbAjustMent/list.jsp</result>
+		</action>
+		<action name="candSsbAjustMentCheck_*" class="com.manpowergroup.cn.icloud.socialbenefit.web.SsbAjustApproveAction" method="{1}">
+			
+			<result name="page">/WEB-INF/jsp/socialbenefit/ssbAjustApprove/page.jsp</result>
+			<result name="detail">/WEB-INF/jsp/socialbenefit/ssbAjustApprove/detail.jsp</result>
+			<result name="edit">/WEB-INF/jsp/socialbenefit/ssbAjustApprove/edit.jsp</result>
+			<result name="list">/WEB-INF/jsp/socialbenefit/ssbAjustApprove/list.jsp</result>
+			<result name="importPre">/WEB-INF/jsp/socialbenefit/ssbAjustApprove/import.jsp</result>
+			<result name="importinfo">/WEB-INF/jsp/socialbenefit/ssbAjustApprove/showmessage.jsp</result>
+		</action>
+	</package>
+</struts>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="base" extends='manpowergroup' namespace="/">
+		<action name="city_*" class="com.manpowergroup.cn.icloud.base.web.CityAction" method="{1}">
+			<result name="page">/WEB-INF/jsp/base/city/page.jsp</result>
+			<result name="list">/WEB-INF/jsp/base/city/list.jsp</result>
+			<result name="edit">/WEB-INF/jsp/base/city/edit.jsp</result>
+			<result name="addCityItem">/WEB-INF/jsp/base/city/addCityItem.jsp</result>
+			<result name="detail">/WEB-INF/jsp/base/city/detail.jsp</result>
+		</action>
+		<action name="item_*" class="com.manpowergroup.cn.icloud.base.web.ItemAction" method="{1}">
+			<result name="page">/WEB-INF/jsp/base/item/page.jsp</result>
+			<result name="list">/WEB-INF/jsp/base/item/list.jsp</result>
+			<result name="edit">/WEB-INF/jsp/base/item/edit.jsp</result>
+			<result name="detail">/WEB-INF/jsp/base/item/detail.jsp</result>
+		</action>
+		
+		<action name="code_*" class="com.manpowergroup.cn.icloud.base.web.CodeAction" method="{1}">
+			<result name="page">/WEB-INF/jsp/base/code/page.jsp</result>
+			<result name="list">/WEB-INF/jsp/base/code/list.jsp</result>
+			<result name="edit">/WEB-INF/jsp/base/code/edit.jsp</result>
+			<result name="addCityItem">/WEB-INF/jsp/base/code/addCityItem.jsp</result>
+			<result name="detail">/WEB-INF/jsp/base/code/detail.jsp</result>
+		</action>
+		
+		<action name="itemtype_*" class="com.manpowergroup.cn.icloud.base.web.ItemTypeAction" method="{1}">
+			<result name="page">/WEB-INF/jsp/base/itemType/page.jsp</result>
+			<result name="list">/WEB-INF/jsp/base/itemType/list.jsp</result>
+			<result name="edit">/WEB-INF/jsp/base/itemType/edit.jsp</result>
+			<result name="addCityItem">/WEB-INF/jsp/base/itemType/addCityItem.jsp</result>
+			<result name="detail">/WEB-INF/jsp/base/itemType/detail.jsp</result>
+		</action>
+	</package>
+</struts>

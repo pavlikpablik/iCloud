@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.manpowergroup.cn.icloud.base.mapper.ItemMapper" >
+  
+  <!-- <cache eviction="LRU" type="com.manpowergroup.cn.core.memcached.MemcachedCache"></cache> -->
+ 
+ <!--  <insert id="insert" parameterType="com.manpowergroup.cn.icloud.base.entity.Item" keyProperty="id" keyColumn="ID">
+	 <selectKey resultType="long" keyProperty="id" order="BEFORE" >  
+   		SELECT SEQ_BASE_ITEM.NEXTVAL FROM DUAL  
+  	 </selectKey>  
+		insert into T_BASE_ITEM (ID,
+				NAME,
+				SEQ,
+				STATUS,
+				CREATE_BY,
+				CREATE_DATE,
+				REMARK,
+				TYPE
+				
+		 )
+		values (#{id:INTEGER},
+		#{name:VARCHAR},#{seq:INTEGER},
+		#{status:INTEGER},#{createBy:INTEGER},#{createDt:TIMESTAMP},#{remark:VARCHAR},#{type:INTEGER}
+		)
+	</insert>-->
+	
+	
+	
+	
+	<insert id="insert" parameterType="com.manpowergroup.cn.icloud.base.entity.Item" keyProperty="id" keyColumn="ID">
+		insert into T_BASE_ITEM (
+				NAME,
+				NAME_EN,
+				DESCRIBE,
+				REMARK,
+				STATUS,
+				CREATE_BY,
+				CREATE_DATE,
+				SEQ,
+				PERSONTAX,
+				COMPANYTAX,
+				IS_NEGATIVE,
+				IS_COMPANY_NEGATIVE,
+				TYPE,
+				ITEM_GROUP,
+				IN_OR_OUT,
+				TAXABLE,
+				SERVICE_TYPE,
+				ITEM_TYPE,
+				IS_PERSON_AMOUNT,
+				IS_COMPANY_AMOUNT,
+				IS_PERSON_PAY,
+				IS_COMPANY_PAY,
+				TAX_PROVIDE_BEFORE,
+				TAX_DEDUCT_AFTER
+		 )
+		values (
+		#{name:VARCHAR},#{nameEn:VARCHAR},#{describe:VARCHAR},#{remark:VARCHAR},#{status:INTEGER},#{createBy:INTEGER},#{createDate:TIMESTAMP},#{seq:INTEGER},#{personTax:INTEGER},
+		#{companyTax:INTEGER},#{isNegative:INTEGER},#{isCompanyNegative:INTEGER},#{type:INTEGER},#{itemGroup:VARCHAR},#{inOrOut:VARCHAR},#{taxAble:VARCHAR},#{serviceType:VARCHAR},#{itemType:VARCHAR},#{isPersonAmount:INTEGER},
+		#{isCompanyAmount:INTEGER},#{isPersonPay:INTEGER},#{isCompanyPay:INTEGER},#{taxProvideBefore:INTEGER},#{taxDeductAfter:INTEGER}
+		)
+		
+		<selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">   
+        <![CDATA[SELECT @@IDENTITY AS id ]]>  
+        </selectKey>  
+		
+	</insert>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+  
+
+  
+  <update id="updateByPrimaryKey" parameterType="com.manpowergroup.cn.icloud.base.entity.Item" >
+    update t_base_item
+    set         NAME=#{name,jdbcType=VARCHAR},
+				NAME_EN=#{nameEn,jdbcType=VARCHAR},
+				DESCRIBE=#{describe,jdbcType=VARCHAR},
+				REMARK= #{remark,jdbcType=VARCHAR},
+				STATUS=#{status,jdbcType=INTEGER},
+				MODIFY_BY=#{modifyBy,jdbcType=INTEGER},
+				MODIFY_DATE=#{modifyDate,jdbcType=TIMESTAMP},
+				SEQ=#{seq,jdbcType=INTEGER},
+				PERSONTAX=#{personTax,jdbcType=INTEGER},
+				COMPANYTAX=#{companyTax,jdbcType=INTEGER},
+				IS_NEGATIVE=#{isNegative,jdbcType=INTEGER},
+				IS_COMPANY_NEGATIVE=#{isCompanyNegative,jdbcType=INTEGER},
+				TYPE=#{type,jdbcType=INTEGER},
+				ITEM_GROUP=#{itemGroup,jdbcType=VARCHAR},
+				IN_OR_OUT=#{inOrOut,jdbcType=VARCHAR},
+				TAXABLE=#{taxAble,jdbcType=VARCHAR},
+				SERVICE_TYPE=#{serviceType,jdbcType=VARCHAR},
+				ITEM_TYPE=#{itemType,jdbcType=VARCHAR},
+				IS_PERSON_AMOUNT=#{isPersonAmount,jdbcType=INTEGER},
+				IS_COMPANY_AMOUNT=#{isCompanyAmount,jdbcType=INTEGER},
+				IS_PERSON_PAY=#{isPersonPay,jdbcType=INTEGER},
+				IS_COMPANY_PAY=#{isCompanyPay,jdbcType=INTEGER},
+				TAX_PROVIDE_BEFORE=#{taxProvideBefore,jdbcType=INTEGER},
+				TAX_DEDUCT_AFTER=#{taxDeductAfter,jdbcType=INTEGER}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  
+  
+  
+  
+  
+  <!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+	<select id="search" parameterType="map" resultType="com.manpowergroup.cn.icloud.base.entity.Item">
+		   SELECT DISTINCT
+            item.NAME,item.id,item.status,item.TYPE
+            FROM  dbo.T_BASE_ITEM item
+             JOIN dbo.T_BASE_TYPE_ITEM typeitem ON item.ID = typeitem.ITEM_ID
+             JOIN dbo.T_BASE_TYPE type ON typeitem.TYPE_ID = type.ID
+		<where>
+			<if test="name != null and name !='' ">
+				and item.NAME=#{name}
+			</if>
+			<if test="nameEn != null and nameEn !='' ">
+				and item.NAME_EN=#{nameEn}
+			</if>
+	        <if test="itemType != null and itemType !='' ">
+				and type.id=#{itemType}
+			</if>
+			<if test="type != null and type !='' ">
+				and item.TYPE=#{type}
+			</if>
+			<if test="itemGroup != null and itemGroup !='' ">
+				and item.ITEM_GROUP=#{itemGroup}
+			</if>
+			<if test="itemsType != null and itemsType !='' ">
+				and item.ITEM_TYPE=#{itemsType}
+			</if>
+			
+		</where>
+		GROUP BY item.NAME,item.id,item.status,item.TYPE
+	</select>
+	
+	<select id="count" parameterType="map" resultType="java.lang.Long">
+	SELECT COUNT(*) FROM (SELECT DISTINCT
+            item.NAME,item.id,item.status,item.TYPE
+            FROM  dbo.T_BASE_ITEM item
+             JOIN dbo.T_BASE_TYPE_ITEM typeitem ON item.ID = typeitem.ITEM_ID
+             JOIN dbo.T_BASE_TYPE type ON typeitem.TYPE_ID = type.ID
+		<where>
+			<if test="name != null and name !='' ">
+				and item.NAME=#{name}
+			</if>
+			<if test="nameEn != null and nameEn !='' ">
+				and item.NAME_EN=#{nameEn}
+			</if>
+	        <if test="itemType != null and itemType !='' ">
+				and type.id=#{itemType}
+			</if>
+			<if test="type != null and type !='' ">
+				and item.TYPE=#{type}
+			</if>
+			<if test="itemGroup != null and itemGroup !='' ">
+				and item.ITEM_GROUP=#{itemGroup}
+			</if>
+			<if test="itemsType != null and itemsType !='' ">
+				and item.ITEM_TYPE=#{itemsType}
+			</if>
+		</where>
+		GROUP BY item.NAME,item.id,item.status,item.TYPE
+		)  items
+	</select>
+	
+	
+	<select id="get" parameterType="long" resultType="com.manpowergroup.cn.icloud.base.entity.Item">
+		SELECT 
+		ID as id,
+		NAME as name,
+		NAME_EN AS nameEn,
+		DESCRIBE AS DESCRIBE,
+		seq AS seq,
+		TYPE as type,
+		STATUS as status,
+		REMARK as remark,
+		PERSONTAX AS personTax,
+		COMPANYTAX AS companyTax,
+		IS_NEGATIVE AS isNegative,
+		IS_COMPANY_NEGATIVE AS isCompanyNegative,
+		ITEM_GROUP AS itemGroup,
+		IN_OR_OUT AS inOrOut,
+		TAXABLE AS taxAble,
+		SERVICE_TYPE AS serviceType,
+		ITEM_TYPE AS itemType,
+		IS_PERSON_AMOUNT AS isPersonAmount,
+		IS_COMPANY_AMOUNT AS isCompanyAmount,
+		IS_PERSON_PAY AS isPersonPay,
+		is_company_Pay AS isCompanyPay,
+		TAX_PROVIDE_BEFORE AS taxProvideBefore,
+		TAX_DEDUCT_AFTER AS taxDeductAfter 
+		from t_base_item WHERE id=#{id}
+	</select>
+	
+	
+	<select id="findAllItem"  resultType="com.manpowergroup.cn.icloud.base.entity.Item">
+		SELECT 
+		ID as id,
+		NAME as name,
+		NAME_EN AS nameEn,
+		DESCRIBE AS DESCRIBE,
+		seq AS seq,
+		TYPE as type,
+		STATUS as status,
+		REMARK as remark,
+		PERSONTAX AS personTax,
+		COMPANYTAX AS companyTax,
+		IS_NEGATIVE AS isNegative,
+		IS_COMPANY_NEGATIVE AS isCompanyNegative,
+		ITEM_GROUP AS itemGroup,
+		IN_OR_OUT AS inOrOut,
+		TAXABLE AS taxAble,
+		SERVICE_TYPE AS serviceType,
+		ITEM_TYPE AS itemType,
+		IS_PERSON_AMOUNT AS isPersonAmount,
+		IS_COMPANY_AMOUNT AS isCompanyAmount,
+		IS_PERSON_PAY AS isPersonPay,
+		is_company_Pay AS isCompanyPay,
+		TAX_PROVIDE_BEFORE AS taxProvideBefore,
+		TAX_DEDUCT_AFTER AS taxDeductAfter 
+		from t_base_item
+		
+	</select>
+	
+	
+	<update id="updateStatus" parameterType="com.manpowergroup.cn.icloud.base.entity.Item" >
+    update T_BASE_ITEM
+				set 
+				STATUS=#{status:INTEGER}
+		where ID=#{id}
+  </update>
+</mapper>

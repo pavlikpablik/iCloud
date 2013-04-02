@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC 
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="sys" extends='manpowergroup' namespace="/">
+	    <!-- 布局 -->
+		<action name="layout_*" class="com.manpowergroup.cn.icloud.sys.web.LayoutAction" method="{1}">
+			<result name="layout">/WEB-INF/jsp/sys/login/page.jsp</result>
+		</action>
+		<action name="logon_*" class="com.manpowergroup.cn.icloud.sys.web.LoginAction" method="{1}">
+			<result name="success" type="redirect">layout_layout.action</result>
+			<result name="login">/WEB-INF/jsp/sys/login/login.jsp</result>
+		</action>
+		<action name="register_*" class="com.manpowergroup.cn.icloud.sys.web.RegisterAction" method="{1}">
+			<result name="register" >/WEB-INF/jsp/sys/register/register.jsp</result>
+			<result name="page">/WEB-INF/jsp/base/item/page.jsp</result>
+			<!-- <result name="layout" type="redirect">city_page.action</result> -->
+		</action>
+		<action name="resource_*" class="com.manpowergroup.cn.icloud.sys.web.ResourceAction" method="{1}">
+			<result name="page">/WEB-INF/jsp/sys/resource/page.jsp</result>
+			<result name="list">/WEB-INF/jsp/sys/resource/list.jsp</result>
+			<result name="edit">/WEB-INF/jsp/sys/resource/edit.jsp</result>
+			<result name="addCityItem">/WEB-INF/jsp/sys/resource/menu/addCityItem.jsp</result>
+			<result name="detail">/WEB-INF/jsp/sys/resource/detail.jsp</result>
+		</action>
+		<action name="user_*" class="com.manpowergroup.cn.icloud.sys.web.UserAction" method="{1}">
+			<result name="page">/WEB-INF/jsp/sys/user/page.jsp</result>
+			<result name="list">/WEB-INF/jsp/sys/user/list.jsp</result>
+			<result name="edit">/WEB-INF/jsp/sys/user/edit.jsp</result>
+			<result name="detail">/WEB-INF/jsp/sys/user/detail.jsp</result>
+			<result name="authzAssign">/WEB-INF/jsp/sys/user/authzAssign.jsp</result>
+			<result name="updatePassword">/WEB-INF/jsp/sys/user/updatePassword.jsp</result>
+			<result name="showOrgan">/WEB-INF/jsp/sys/user/organ.jsp</result>
+			<result name="showRole">/WEB-INF/jsp/sys/user/roleAssign.jsp</result>
+		</action>
+		<action name="organ_*" class="com.manpowergroup.cn.icloud.sys.web.OrganAction" method="{1}">
+			<result name="page">/WEB-INF/jsp/sys/organ/page.jsp</result>
+			<result name="list">/WEB-INF/jsp/sys/organ/list.jsp</result>
+			<result name="edit">/WEB-INF/jsp/sys/organ/edit.jsp</result>
+			<result name="level">/WEB-INF/jsp/sys/organ/level.jsp</result>
+			<result name="detail">/WEB-INF/jsp/sys/organ/detail.jsp</result>
+			<result name="searchUser">/WEB-INF/jsp/sys/organ/searchUser.jsp</result>
+		</action>
+		<!-- 权限组管理模块 struts配置 -->
+		<action name="role_*" class="com.manpowergroup.cn.icloud.sys.web.RoleAction" method="{1}">
+			<result name="page">/WEB-INF/jsp/sys/role/page.jsp</result>
+			<result name="list">/WEB-INF/jsp/sys/role/list.jsp</result>
+			<result name="edit">/WEB-INF/jsp/sys/role/edit.jsp</result>
+			<result name="detail">/WEB-INF/jsp/sys/role/detail.jsp</result>
+			<result name="authzAssign">/WEB-INF/jsp/sys/role/authzAssign.jsp</result>
+			<result name="updatePassword">/WEB-INF/jsp/sys/role/updatePassword.jsp</result>
+			<result name="user">/WEB-INF/jsp/sys/role/user.jsp</result>
+		</action>
+		<!-- 下载excel导入错误数据 -->
+		<action name="importErrorExcel_*" class="com.manpowergroup.cn.icloud.sys.web.ImportErrorExcelAction" method="{1}">
+		</action>
+	</package>
+</struts>

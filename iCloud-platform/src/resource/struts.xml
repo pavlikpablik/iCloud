@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+        "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<constant name="struts.ognl.allowStaticMethodAccess" value="true"/>
+	<!-- 允许上传文件最大字节为107374182400  == 100MB -->
+	<constant name="struts.multipart.maxSize" value="107374182400" />
+	
+	
+	<package name="manpowergroup" extends="struts-default">
+	
+		<interceptors>
+		    <interceptor name="logonStack" class="com.manpowergroup.cn.core.interceptor.LoginInterceptor"></interceptor> 
+		   <!-- <interceptor name="menuStack" class="com.manpowergroup.cn.icloud.sys.util.MenuStack"></interceptor>  -->
+		   <interceptor name="exceptionStack" class="com.manpowergroup.cn.core.interceptor.ExceptionInterceptor"></interceptor>
+	       <interceptor-stack name="iCloudDefaultStack">
+                <interceptor-ref name="exception"/>
+                <interceptor-ref name="alias"/>
+                <interceptor-ref name="servletConfig"/>
+                <interceptor-ref name="chain"/>
+                <interceptor-ref name="debugging"/>
+                <interceptor-ref name="profiling"/>
+                <interceptor-ref name="modelDriven"/>
+                <interceptor-ref name="fileUpload"/>
+                <interceptor-ref name="checkbox"/>
+                <interceptor-ref name="staticParams"/>
+                <interceptor-ref name="actionMappingParams"/>
+                <interceptor-ref name="conversionError"/>
+                	<interceptor-ref name="exception"/>
+            <interceptor-ref name="i18n"/>
+            <interceptor-ref name="prepare"/>
+            <interceptor-ref name="scopedModelDriven"/>
+            <interceptor-ref name="params">
+              <param name="excludeParams">dojo\..*,^struts\..*</param>
+            </interceptor-ref>
+            </interceptor-stack>
+	       <interceptor-stack name="iCloudStack">
+	       	<interceptor-ref name="iCloudDefaultStack"/>
+	        <interceptor-ref name="logonStack"></interceptor-ref>
+	        <!-- <interceptor-ref name="menuStack"></interceptor-ref> -->
+	        <interceptor-ref name="exceptionStack"></interceptor-ref>
+	       	
+	      </interceptor-stack>
+	    </interceptors>
+		<default-interceptor-ref name="iCloudStack"></default-interceptor-ref>
+		<global-results>  
+			<result name="login" type="redirect">/logon_tologon.action</result>  
+		</global-results>
+	
+		<!-- <global-exception-mappings>  
+            <exception-mapping result="all" exception="java.lang.Exception">  
+            </exception-mapping>  
+        </global-exception-mappings> -->
+	</package>
+
+	<include file="struts-base.xml"></include>
+	<include file="struts-sys.xml"></include>
+	<include file="struts-socialbenefit.xml"></include>
+	<include file="struts-socialbenefitbase.xml"></include>
+	
+	<!-- <include file="struts-ssb.xml"></include>
+	<include file="struts-vendor.xml"></include>
+	
+	<include file="struts-report.xml"></include> -->
+</struts>

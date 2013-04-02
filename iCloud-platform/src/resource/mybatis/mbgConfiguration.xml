@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+  PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<!-- mybatis自动生成代码，插件：http://mybatis.googlecode.com/svn/sub-projects/generator/trunk/eclipse/UpdateSite/ -->
+
+<generatorConfiguration>
+
+	<!-- 配置mysql 驱动jar包路径.用了绝对路径 -->
+	<!-- <classPathEntry location="D:\env\eclipse4.2_sr1\workspace\iCloud-platform\WebContent\WEB-INF\lib\mysql-connector-java-5.1.22-bin.jar" 
+		/> -->
+	<classPathEntry
+		location="D:\env\eclipse4.2_sr1\workspace\iCloud-platform\WebContent\WEB-INF\lib\ojdbc6.jar" />
+
+	<!-- 简单配置，够用了 -->
+	<context id="my_mysql_tables" targetRuntime="MyBatis3Simple">
+
+		<!-- 普通配置，貌似比简单多一些方法 -->
+		<!-- <context id="my_mysql_tables" targetRuntime="MyBatis3"> -->
+
+		<!-- 为了防止生成的代码中有很多注释，比较难看，加入下面的配置控制 -->
+		<commentGenerator>
+			<property name="suppressAllComments" value="true" />
+			<property name="suppressDate" value="true" />
+		</commentGenerator>
+		<!-- 注释控制完毕 -->
+
+		<!-- 数据库连接 -->
+		<jdbcConnection driverClass="oracle.jdbc.driver.OracleDriver"
+			connectionURL="jdbc:oracle:thin:@10.86.13.13:1521:icloud" 
+			userId="icloud_user"
+			password="icloud">
+		</jdbcConnection>
+
+		<javaTypeResolver>
+			<property name="forceBigDecimals" value="false" />
+		</javaTypeResolver>
+
+		<!-- 数据表对应的 层 -->
+		<javaModelGenerator targetPackage="com.manpowergroup.cn.icloud.socialbenefit.entity"
+			targetProject="iCloud-platform">
+			<property name="enableSubPackages" value="true" />
+			<property name="trimStrings" value="true" />
+		</javaModelGenerator>
+
+		<!-- sql mapper 隐射配置文件 -->
+		<sqlMapGenerator targetPackage="com.manpowergroup.cn.icloud.socialbenefit.mapper"
+			targetProject="iCloud-platform">
+			<property name="enableSubPackages" value="true" />
+		</sqlMapGenerator>
+
+		<!-- mapper接口 -->
+		<javaClientGenerator type="XMLMAPPER"
+			targetPackage="com.manpowergroup.cn.icloud.socialbenefit.mapper" targetProject="iCloud-platform">
+			<property name="enableSubPackages" value="true" />
+		</javaClientGenerator>
+
+		<!-- 要对那些数据表进行生成操作，必须要有一个.jdbcType:INTEGER, DECIMAL, NUMERIC, VARCHAR, -->
+		<table tableName="T_CAND_SSB_AJUSTMENT" domainObjectName="SsbAjust">
+			<columnOverride column="ID" javaType="Long"></columnOverride>
+			<columnOverride column="CREATE_BY" javaType="Long"></columnOverride>
+			<columnOverride column="MODIFY_BY" javaType="Long"></columnOverride>
+			<columnOverride column="STATUS" javaType="Integer"></columnOverride>
+			
+		</table>
+		<table tableName="T_CAND_SSB_AJUSTMENT_DETAIL" domainObjectName="SsbAjustDetail">
+			<columnOverride column="ID" javaType="Integer"></columnOverride>
+			<columnOverride column="AJUSTMENT_HEADER_ID" javaType="Long"></columnOverride>
+			<columnOverride column="CREATE_BY" javaType="Long"></columnOverride>
+			<columnOverride column="MODIFY_BY" javaType="Long"></columnOverride>
+			<columnOverride column="STATUS" javaType="Integer"></columnOverride>
+		</table>
+	</context>
+</generatorConfiguration>

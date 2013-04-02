@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC 
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="socialbenefitBase" extends='manpowergroup' namespace="/">
+		<action name="socialBenefitBase_*" class="com.manpowergroup.cn.icloud.socialbenefitBase.web.SocialBenefitBaseAction" method="{1}">
+			<result name="page">/WEB-INF/jsp/socialbenefitbase/page.jsp</result>
+			<result name="list">/WEB-INF/jsp/socialbenefitbase/list.jsp</result>
+			<result name="edit">/WEB-INF/jsp/socialbenefitbase/edit.jsp</result>
+			<result name="addItemNew">/WEB-INF/jsp/socialbenefitbase/edit-itemlist.jsp</result>
+			<result name="detail">/WEB-INF/jsp/socialbenefitbase/detail.jsp</result>
+			<result name="import">/WEB-INF/jsp/socialbenefitbase/import.jsp</result>
+			<result name="importinfo">/WEB-INF/socialbenefitbase/showmessage.jsp</result>
+			<result name="uploadFile">/WEB-INF/jsp/socialbenefitbase/uploadFile.jsp</result>
+			<result name="detailUploadFile">/WEB-INF/jsp/socialbenefitbase/detailUploadFile.jsp</result>
+		</action>
+		
+		<action name="socialBenefitBaseApply_*" class="com.manpowergroup.cn.icloud.socialbenefitBase.web.SocialBenefitBaseApplyAction" method="{1}">
+			<result name="page">/WEB-INF/jsp/socialbenefitbaseApply/page.jsp</result>
+			<result name="list">/WEB-INF/jsp/socialbenefitbaseApply/list.jsp</result>
+			<result name="edit">/WEB-INF/jsp/socialbenefitbaseApply/edit.jsp</result>
+			<result name="addItemNew">/WEB-INF/jsp/socialbenefitbaseApply/edit-itemlist.jsp</result>
+			<result name="detail">/WEB-INF/jsp/socialbenefitbaseApply/detail.jsp</result>
+			<result name="import">/WEB-INF/jsp/socialbenefitbaseApply/import.jsp</result>
+			<result name="importinfo">/WEB-INF/socialbenefitbaseApply/showmessage.jsp</result>
+			<result name="uploadFile">/WEB-INF/jsp/socialbenefitbaseApply/uploadFile.jsp</result>
+			<result name="detailUploadFile">/WEB-INF/jsp/socialbenefitbaseApply/detailUploadFile.jsp</result>
+		</action>
+	</package>
+</struts>

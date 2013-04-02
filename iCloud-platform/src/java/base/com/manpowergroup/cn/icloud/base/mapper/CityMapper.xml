@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.manpowergroup.cn.icloud.base.mapper.CityMapper">
+	<!-- <cache eviction="LRU" type="com.manpowergroup.cn.core.memcached.MemcachedCache"></cache> -->
+	<resultMap type="com.manpowergroup.cn.icloud.base.entity.City" id="selectPCityAndCCity">
+	
+		<id property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="nameEn" column="name_en"/>
+		<result property="parentId" column="parent_Id"/>
+		<result property="seq" column="seq"/>
+		<result property="status" column="STATUS"/>
+		<result property="level" column="LEVEL"/>
+		<result property="remark" column="remark"/>
+		<collection property="citys" javaType="ArrayList" column="id" ofType="com.manpowergroup.cn.icloud.base.entity.City" select="selectCitysByProvince"></collection>
+		<!-- <collection property="parentCity" javaType="com.manpowergroup.cn.icloud.base.entity.City" column="parent_Id" ofType="com.manpowergroup.cn.icloud.base.entity.City" select="selectProvinceByCityId"></collection> -->
+		
+	</resultMap>
+	
+	<resultMap type="com.manpowergroup.cn.icloud.base.entity.City" id="selectProvince">
+	
+		<id property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="nameEn" column="nameEn"/>
+		<result property="seq" column="seq"/>
+		<result property="status" column="STATUS"/>
+		<result property="level" column="LEVEL"/>
+		<result property="parentId" column="parentId"/>
+		<result property="remark" column="remark"/>
+		
+	</resultMap>
+	
+	<select id="getProvinceList" resultMap="selectProvince" >
+		select  ID, 
+				NAME,
+				NAME_EN  nameEn,
+				SEQ,
+				STATUS,
+				"LEVEL",
+				PARENT_ID  parentId,
+				remark
+		from T_BASE_CITY
+		where STATUS > 0 and "LEVEL" = 1 order by seq
+		 
+	</select>
+	
+	<select id="getCityList" parameterType="Integer" resultType="com.manpowergroup.cn.icloud.base.entity.City" >
+		select  ID, 
+				NAME,
+				NAME_EN  nameEn,
+				SEQ,
+				STATUS,
+				"LEVEL",
+				PARENT_ID  parentId,
+				remark
+		from T_BASE_CITY
+		where PARENT_ID=#{pervinceId} and status = 1
+	</select>
+	
+	<select id="selectCitysByProvince" parameterType="long" resultType="com.manpowergroup.cn.icloud.base.entity.City" >
+		select  ID, 
+				NAME,
+				NAME_EN  nameEn,
+				SEQ,
+				STATUS,
+				"LEVEL",
+				PARENT_ID  parentId,
+				remark
+		from T_BASE_CITY
+		where PARENT_ID=#{id}
+	</select>
+	
+	<select id="findAll"  resultMap="selectProvince" >
+		select  ID, 
+				NAME,
+				NAME_EN  nameEn,
+				SEQ,
+				STATUS,
+				"LEVEL",
+				PARENT_ID  parentId,
+				remark
+		from T_BASE_CITY order by seq
+	</select>
+	
+	
+	<select id="get" parameterType="java.lang.Long" resultMap="selectPCityAndCCity">
+		select  ID, 
+				NAME,
+				NAME_EN  nameEn,
+				parent_Id parentId, 
+				SEQ,
+				STATUS,
+				"LEVEL",
+				remark
+		from T_BASE_CITY
+		where id=#{id} 
+	</select>
+	<select id="selectProvinceByCityId" parameterType="java.lang.Long" resultType="com.manpowergroup.cn.icloud.base.entity.City">
+		select  ID, 
+				NAME,
+				NAME_EN  nameEn,
+				SEQ,
+				STATUS,
+				"LEVEL",
+				remark
+		from T_BASE_CITY
+		where id=#{parentId} 
+	</select>
+	
+	
+	<select id="maxSeq"  resultType="java.lang.Integer">
+		select  max(SEQ)
+		from T_BASE_CITY
+		where "LEVEL" = 1 
+	</select>
+	
+	
+
+	<!-- 查询用户,演示: 1.输入用map传入多个参数 2.<where>语句, 智能添加where和and关键字 3.输出直接映射对象 -->
+	<select id="query" parameterType="map" resultType="com.manpowergroup.cn.icloud.base.entity.City">
+		select distinct
+		    p.ID,
+		    p.NAME,
+		    p.NAME_EN  nameEn,
+		    p.SEQ,
+		    p.STATUS,
+		    p."LEVEL",
+		    p.PARENT_ID   parentId,
+		    p.remark
+		from
+		    T_BASE_CITY  p
+		left join T_BASE_CITY  c ON c.parent_id = p.id
+		<where>
+			<if test="pname != null and pname!='' ">
+				and p.NAME=#{pname}
+			</if>
+			<if test="pname_en != null and pname_en !='' ">
+				and p.NAME_EN=#{pname_en}
+			</if>
+			<if test="cname != null  and cname !='' ">
+				and c.NAME=#{cname}
+			</if>
+			<if test="cname_en != null and cname_en !='' ">
+				and c.NAME_EN=#{cname_en}
+			</if>
+			
+			<if test="status != null  and status !='' ">
+				and p.STATUS=#{status}
+			</if>
+			
+			<if test="parentId != null and parentId !='' ">
+				and c.PARENT_ID=#{parentId}
+			</if>
+			<if test="level != null and level !='' ">
+				and p."LEVEL"=#{level}
+			</if>
+			
+		</where>
+		  GROUP BY p.ID ,
+                        p.NAME ,
+                        p.NAME_EN  ,
+                        p.SEQ ,
+                        p.STATUS ,
+                        p."LEVEL" ,
+                        p.PARENT_ID  ,
+                        p.remark
+		order by p.seq
+	</select>
+	
+	<select id="count" parameterType="map" resultType="java.lang.Long">
+	SELECT COUNT(*) FROM (select distinct
+		    p.ID
+		from
+		    T_BASE_CITY  p
+		left join T_BASE_CITY  c ON c.parent_id = p.id
+		<where>
+			<if test="pname != null and pname!='' ">
+				and p.NAME=#{pname}
+			</if>
+			<if test="pname_en != null and pname_en !='' ">
+				and p.NAME_EN=#{pname_en}
+			</if>
+			<if test="cname != null  and cname !='' ">
+				and c.NAME=#{cname}
+			</if>
+			<if test="cname_en != null and cname_en !='' ">
+				and c.NAME_EN=#{cname_en}
+			</if>
+			
+			<if test="status != null  and status !='' ">
+				and p.STATUS=#{status}
+			</if>
+			
+			<if test="parentId != null and parentId !='' ">
+				and c.PARENT_ID=#{parentId}
+			</if>
+			<if test="level != null and level !='' ">
+				and p."LEVEL"=#{level}
+			</if>
+		</where>
+		)  cc
+	</select>
+
+	<insert id="insert" parameterType="com.manpowergroup.cn.icloud.base.entity.City"  >
+		
+	
+		<![CDATA[ insert into T_BASE_CITY (
+				NAME,
+				NAME_EN,
+				SEQ,
+				STATUS,
+				"LEVEL",
+				PARENT_ID,
+				CREATE_BY,
+				CREATE_DATE,
+				REMARK
+		 )
+		values (
+		#{name:VARCHAR},#{nameEn:VARCHAR},#{seq:INTEGER},
+		#{status:INTEGER},#{level:INTEGER},#{parentId:INTEGER},
+		#{createBy:INTEGER},#{createDate:TIMESTAMP},#{remark:VARCHAR}
+		) ]]>
+		
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER">   
+        <![CDATA[SELECT @@IDENTITY AS id ]]>  
+    </selectKey>   
+		
+	</insert>
+	
+	
+	<update id="update"  parameterType="com.manpowergroup.cn.icloud.base.entity.City">
+		update T_BASE_CITY 
+				set NAME =#{name:VARCHAR},
+				NAME_EN =#{nameEn:VARCHAR},
+				SEQ =#{seq:INTEGER},
+				STATUS=#{status:INTEGER},
+				"LEVEL"=#{level:INTEGER},
+				PARENT_ID=#{parentId:INTEGER},
+				MODIFY_BY=#{modifyBy:INTEGER},
+				MODIFY_DATE= #{modifyDate:TIMESTAMP}, 
+				REMARK= #{remark:VARCHAR} 
+		where ID=#{id}
+	</update>
+	
+	<!-- 删除 -->
+	<delete id="delete" parameterType="long">
+	     delete from T_BASE_CITY where id=#{id}
+	</delete>
+</mapper> 

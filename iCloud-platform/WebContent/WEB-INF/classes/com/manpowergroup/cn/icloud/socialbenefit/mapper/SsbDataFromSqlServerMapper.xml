@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace必须指向Dao接口 -->
+<mapper namespace="com.manpowergroup.cn.icloud.socialbenefit.mapper.SsbDataFromSqlServerMapper" >
+
+	<select id="queryCandidateById" parameterType="java.lang.Integer" resultType="com.manpowergroup.cn.icloud.socialbenefit.model.CandidateModel">
+		SELECT  id,no,fn_cn as fnCn FROM dbo.T_CAND_CANDIDATE where id=#{candidateId} 
+	</select>
+	 
+	<select id="queryCandSsbByCandId" parameterType="java.lang.Integer" resultType="com.manpowergroup.cn.icloud.socialbenefit.model.CandSsbModel">
+		SELECT CHARGE_RULE_ID chargeRuleId,header.id id,header.NAME name FROM dbo.T_CAND_SSB cand 
+		LEFT JOIN dbo.T_SSB_HEADER header ON cand.SSB_ID=header.ID WHERE cand.CAND_ID=#{candidateId} 
+	</select>
+	
+	<select id="queryChargeRuleByChargeId" parameterType="java.lang.Integer" resultType="com.manpowergroup.cn.icloud.socialbenefit.model.ChargeModel">
+		SELECT id,CLIENT_ID clientId,name  FROM dbo.T_CHARGE_RULE WHERE id =#{chargeId} 
+	</select>
+	
+	<select id="queryClientByClientId" parameterType="java.lang.Integer" resultType="com.manpowergroup.cn.icloud.socialbenefit.model.ClientModel">
+		SELECT CLIENT_ID clientId,CN_NAME clientName FROM dbo.T_CLIENT_CLIENT WHERE id=#{clientId} 
+	</select>
+	
+	<select id="querySsbItemBySsbId" parameterType="java.lang.Integer" resultType="com.manpowergroup.cn.icloud.socialbenefit.model.SsbItemModel">
+		SELECT  detail.id id,item.NAME name FROM dbo.T_SSB_DETAIL detail LEFT JOIN dbo.T_BASE_ITEM item 
+		ON detail.ITEM_ID = item.ID WHERE HEADER_ID=#{ssbId}
+	</select>
+	
+	<select id="queryRuleId" parameterType="com.manpowergroup.cn.icloud.socialbenefit.model.CandSsbModel" resultType="com.manpowergroup.cn.icloud.socialbenefit.model.CandSsbModel">
+		SELECT  CHARGE_RULE_ID chargeRuleId FROM dbo.T_CAND_SSB WHERE cand_id=#{candidateId} AND SSB_ID=#{ssbId}
+	</select>
+	
+	<select id="queryCandidateByIdOrNo" parameterType="map" resultType="com.manpowergroup.cn.icloud.socialbenefit.model.CandidateModel">
+		SELECT  id,no,fn_cn as fnCn FROM dbo.T_CAND_CANDIDATE 
+		<where>
+			<if test="candidateId != null and candidateId!='' ">
+				or id= #{candidateId,jdbcType=DECIMAL} 
+			</if>
+			<if test="candidateNo != null and candidateNd!='' ">
+				or no=#{candidateNo,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+	
+	<select id="queryCompanyUnderByChargeId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+		SELECT company_undertake  FROM dbo.T_CHARGE_RULE WHERE id =#{chargeId} 
+	</select>
+	
+	<insert id="insertChargeAjust" parameterType="com.manpowergroup.cn.icloud.socialbenefit.entity.SsbAjust">
+	INSERT INTO dbo.T_CHARGE_AJUST(
+			 CAND_ID ,TYPE,RULE_ID ,MONTH_ATTRIBUTE ,MONTH_FEE,CREATE_DATE,STATUS ,REMARK )
+	values (#{candidateId,jdbcType=DECIMAL},
+	#{status,jdbcType=DECIMAL},#{ruleId,jdbcType=DECIMAL},#{monthAttribute},
+	#{monthFee},#{createDate,jdbcType=DATE},#{type,jdbcType=DECIMAL},
+	#{remark,jdbcType=VARCHAR}
+	)
+	
+</insert>	
+  
+<insert id="insertChargeAjustDetail" parameterType="java.util.List">  
+
+  INSERT INTO T_CHARGE_AJUST_DETAIL ( AJUST_ID, ITEM_ID,  
+  CREATE_DATE, REMARK, COMPANY_PAY, COMPANY_AMOUNT, PERSON_PAY ,PERSON_AMOUNT ,TYPE) values  
+  <foreach collection="list" item="item" index="index"  
+      separator=",">  
+      (IDENT_CURRENT('T_CHARGE_AJUST'), #{item.itemId,jdbcType=DECIMAL},
+      #{item.createDate,jdbcType=DATE}, #{item.remark,jdbcType=VARCHAR},  
+      #{item.companyPay,jdbcType=DECIMAL}, #{item.companyAmount,jdbcType=DECIMAL},  
+      #{item.personPay,jdbcType=DECIMAL}, #{item.personAmount,jdbcType=DECIMAL},  
+      #{item.type,jdbcType=DECIMAL} )  
+  </foreach>  
+</insert> 
+</mapper> 

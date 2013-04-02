@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.manpowergroup.cn.icloud.sys.mapper.RoleMapper" >
+  <resultMap id="BaseResultMap" type="com.manpowergroup.cn.icloud.sys.entity.Role" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="SORT" property="sort" jdbcType="DECIMAL" />
+    <result column="ENABLED" property="enabled" jdbcType="DECIMAL" />
+    <result column="BRANCH_ID" property="branchId" jdbcType="DECIMAL" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="DATE" />
+    <result column="CREATE_BY" property="createBy" jdbcType="DECIMAL" />
+    <result column="MODIFY_DATE" property="modifyDate" jdbcType="DATE" />
+    <result column="MODIFY_BY" property="modifyBy" jdbcType="DECIMAL" />
+    <result column="STATUS" property="status" jdbcType="DECIMAL" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="BaseResultQueryMap" type="com.manpowergroup.cn.icloud.sys.entity.Role" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="ENABLED" property="enabled" jdbcType="DECIMAL" />
+  </resultMap>
+  <resultMap id="ResultUserQueryMap" type="com.manpowergroup.cn.icloud.sys.entity.Role" >
+    <result column="userName" property="userName" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="Long" >
+    delete from T_SYS_ROLE
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="com.manpowergroup.cn.icloud.sys.entity.Role" >
+  	<selectKey resultType="long" order="BEFORE" keyProperty="id"> 
+		SELECT seq_sys_role.NEXTVAL FROM DUAL 
+	</selectKey>
+    insert into T_SYS_ROLE (ID, NAME, SORT, 
+      ENABLED, CREATE_DATE, CREATE_BY, 
+      MODIFY_DATE, MODIFY_BY, STATUS, 
+      REMARK,BRANCH_ID)
+    values (#{id,jdbcType=DECIMAL}, #{name,jdbcType=VARCHAR}, #{sort,jdbcType=DECIMAL}, 
+      #{enabled,jdbcType=DECIMAL}, #{createDate,jdbcType=DATE}, #{createBy,jdbcType=DECIMAL}, 
+      #{modifyDate,jdbcType=DATE}, #{modifyBy,jdbcType=DECIMAL}, #{status,jdbcType=DECIMAL}, 
+      #{remark,jdbcType=VARCHAR},#{branchId,jdbcType=DECIMAL})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.manpowergroup.cn.icloud.sys.entity.Role" >
+    update T_SYS_ROLE
+    set NAME = #{name,jdbcType=VARCHAR},
+      SORT = #{sort,jdbcType=DECIMAL},
+      ENABLED = #{enabled,jdbcType=DECIMAL},
+      CREATE_DATE = #{createDate,jdbcType=DATE},
+      CREATE_BY = #{createBy,jdbcType=DECIMAL},
+      MODIFY_DATE = #{modifyDate,jdbcType=DATE},
+      MODIFY_BY = #{modifyBy,jdbcType=DECIMAL},
+      STATUS = #{status,jdbcType=DECIMAL},
+      REMARK = #{remark,jdbcType=VARCHAR},
+      BRANCH_ID = #{branchId,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="Long" >
+    select ID, NAME, SORT, ENABLED, CREATE_DATE, CREATE_BY, MODIFY_DATE, MODIFY_BY, STATUS, 
+    REMARK
+    from T_SYS_ROLE
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select ID, NAME, SORT, ENABLED, CREATE_DATE, CREATE_BY, MODIFY_DATE, MODIFY_BY, STATUS, 
+    REMARK
+    from T_SYS_ROLE
+  </select>
+  
+  <delete id="deleteUserRole" parameterType="long">
+		delete from T_SYS_USER_ROLE where ROLE_ID = #{roleId}
+	</delete>
+	
+	<delete id="deleteRoleByUserId" parameterType="long">
+		delete from T_SYS_USER_ROLE where USER_ID = #{userId}
+	</delete>
+	
+	<insert id="batchInsertUserRole" > 
+    
+    begin 
+		<foreach collection="list" item="item" index="index" 
+		separator=";"> <!--分号 注意--> 
+		insert into T_SYS_USER_ROLE(USER_ID,ROLE_ID) values
+		 (#{item.userId},#{item.roleId})
+		</foreach> 
+		;end;
+    
+	</insert>
+  <select id="query" parameterType="map" resultMap="BaseResultQueryMap">
+		select distinct
+			sysRole.ID id,
+		    sysRole.name name,
+			sysRole.enabled enabled
+			from t_Sys_Role sysRole
+		<where>
+			<if test="branchId != null and branchId!='' ">
+				and sysRole.BRANCH_ID=#{branchId}
+			</if>
+			<if test="name != null and name!='' ">
+				and sysRole.name=#{name}
+			</if>
+			<if test="enabled != null and enabled !='' ">
+				and sysRole.enabled=#{enabled}
+			</if>
+		</where>
+		order by sysRole.SORT desc
+	</select>
+	
+	<select id="count" parameterType="map" resultType="java.lang.Long">
+	SELECT COUNT(*) FROM (select distinct sysRole.ID id
+			from t_Sys_Role sysRole
+		<where>
+			<if test="branchId != null and branchId!='' ">
+				and sysRole.BRANCH_ID=#{branchId}
+			</if>
+			<if test="name != null and name!='' ">
+				and sysRole.name=#{name}
+			</if>
+			<if test="enabled != null and enabled !='' ">
+				and sysRole.enabled=#{enabled}
+			</if>
+		</where>
+		)  cc
+	</select>
+	
+	<update id="updateStatus" parameterType="com.manpowergroup.cn.icloud.sys.entity.Role" >
+	    update t_Sys_Role
+	    set 
+	      ENABLED = #{enabled,jdbcType=DECIMAL}
+	    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  
+  <delete id="deleteRoleResource" parameterType="long">
+		delete from T_SYS_ROLE_RESOURCE where role_id = #{roleId}
+  </delete>
+  
+  <insert id="batchInsertRoleResources" > 
+    	begin 
+		<foreach collection="list" item="item" index="index" 
+		separator=";"> <!--分号 注意--> 
+		insert into T_SYS_ROLE_RESOURCE(ROLE_ID,RESOURCE_ID) values
+		 (#{item.roleId},#{item.resourceId})
+		</foreach> 
+		;end;
+  </insert>
+  
+  <select id="selectRoleByName" resultMap="BaseResultMap" parameterType="map" >
+    select ID, NAME, SORT, ENABLED, CREATE_DATE, CREATE_BY, MODIFY_DATE, MODIFY_BY, STATUS, 
+    REMARK,BRANCH_ID
+    from T_SYS_ROLE
+    where NAME = #{name} and BRANCH_ID = #{branchId}
+  </select>
+  
+  <select id="queryUserByRoleId" parameterType="map" resultMap="ResultUserQueryMap">
+		select 
+		    sysUser.True_Name userName
+			from t_sys_user_role userRole 
+			join t_sys_user sysUser on userRole.User_Id = sysUser.Id
+		<where>
+			<if test="roleId != null and roleId!='' ">
+				userRole.Role_Id=#{roleId}
+			</if>
+		</where>
+	</select>
+  
+</mapper>
